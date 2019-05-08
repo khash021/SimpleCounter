@@ -47,6 +47,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
                     String[] bpmElapsed = input.split(";");
                     String counter = bpmElapsed[0];
                     String elapsed = bpmElapsed[1];
+                    Log.v(TAG, "C: " + counter + "; T= " + elapsed);
                     textStopWatch.setText(elapsed);
                     textCounter.setText(counter);
                     mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE); //text view is updated every second,

@@ -1,6 +1,10 @@
 package app.khash.simplecounter;
 
+import android.util.Log;
+
 public class Stopwatch {
+
+    String TAG = getClass().getName();
 
     private long startTime = 0;
     private long stopTime = 0;
@@ -26,26 +30,26 @@ public class Stopwatch {
 
 
     // elaspsed time in milliseconds
-    public long getElapsedTime() {
+    public long getElapsedMilli() {
         if (running) {
             return System.currentTimeMillis() - startTime;
         }
         return stopTime - startTime;
-    }//getElapsedTime
+    }//getElapsedMilli
 
 
     // elaspsed time in seconds
-    public long getElapsedTimeSecs() {
+    public long getElapsedSecs() {
         if (running) {
             return ((System.currentTimeMillis() - startTime) / 1000);
         }
         return ((stopTime - startTime) / 1000);
-    }//getElapsedTimeSecs
+    }//getElapsedSecs
 
     //get counter value based on bpm
     public int getBpm() {
         if (running) {
-            long elapsedMilli = getElapsedTime();
+            long elapsedMilli = getElapsedMilli();
             float bpmFloat = elapsedMilli * (bpm / MINUTE);
             int counter = Math.round(bpmFloat / 1000);
             return counter;
@@ -58,10 +62,11 @@ public class Stopwatch {
     //get the time and bpm as to avoid the difference between the two
     public String getBpmElapsed() {
         if (running) {
-            long elapsedMilli = getElapsedTime();
+            long elapsedMilli = getElapsedMilli();
             float bpmFloat = elapsedMilli * (bpm / MINUTE);
-            int counter = Math.round(bpmFloat / 1000);
-            String output = counter + ";" + elapsedMilli;
+            int counter = (int) bpmFloat/1000;
+            String output = counter + ";" + (elapsedMilli /1000);
+            Log.v(TAG, elapsedMilli + " : " + bpmFloat + " : " + counter);
             return output;
         } else {
             return null;
