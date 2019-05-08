@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
-public class MainActivity2 extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity2 extends AppCompatActivity implements View.OnClickListener  {
 
     String TAG = getClass().getName();
 
@@ -24,9 +26,16 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
 
     final int BPM_DEFAULT = 60;
 
+    int mBpm;
+    final int BMP_40 = 40;
+    final int BMP_120 = 120;
+
     TextView textStopWatch, textCounter;
     EditText textBpm;
     Button buttonStart, buttonStop, buttonReset;
+
+    RadioGroup radioBpmGroup;
+
 
     Handler mHandler = new Handler() {
         @Override
@@ -81,17 +90,35 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
         buttonStop.setOnClickListener(this);
         buttonReset.setOnClickListener(this);
 
+        radioBpmGroup = findViewById(R.id.radio_group_bpm);
+        radioBpmGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radio_bpm_40:
+                        mBpm = BMP_40;
+                        break;
+                    case R.id.radio_bpm_60:
+                        mBpm = BPM_DEFAULT;
+                        break;
+                    case R.id.radio_bpm_120:
+                        mBpm = BMP_120;
+                        break;
+                }//switch
+            }
+        });
+
     }//onCreate
 
     public void onClick(View v) {
+        Log.v(TAG, "view = " + v.getTransitionName());
         if (v == buttonStart) {
-            if (textBpm.getText().toString().trim().length() < 1) {
-                textBpm.setText(Integer.toString(BPM_DEFAULT));
-                timer = new Stopwatch(BPM_DEFAULT);
+            if (textBpm.getText().toString().trim().length() > 0) {
+                mBpm = Integer.parseInt(textBpm.getText().toString().trim());
             } else {
-                int bpm = Integer.parseInt(textBpm.getText().toString().trim());
-                timer = new Stopwatch(bpm);
+                ((RadioButton) findViewById(R.id.radio_bpm_60)).setChecked(true);
             }
+            timer = new Stopwatch(mBpm);
             mHandler.sendEmptyMessage(MSG_START_TIMER);
         } else if (v == buttonStop) {
             mHandler.sendEmptyMessage(MSG_STOP_TIMER);
