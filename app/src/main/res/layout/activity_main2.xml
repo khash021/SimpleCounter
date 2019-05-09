@@ -91,10 +91,21 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
         android:layout_marginBottom="100dp"
-        android:hint="Start"
-        android:textSize="22sp"
+        android:text="Start"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/button_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:text="Pause"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
         android:id="@+id/button_stop"
@@ -102,8 +113,8 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="50dp"
         android:layout_marginBottom="100dp"
-        android:hint="Stop"
-        android:textSize="22sp"
+        android:text="Stop"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -112,7 +123,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:hint="Reset"
+        android:text="Reset"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
