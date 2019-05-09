@@ -15,6 +15,7 @@ import android.widget.TextView;
 public class MainActivity2 extends AppCompatActivity implements View.OnClickListener {
 
     //TODO: add comments and start cleaning up the code and variables
+    //TODO: group reset and other tasks into separate functions for the buttons
 
     String TAG = getClass().getName();
 
@@ -36,6 +37,9 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
     Button buttonStart, buttonStop, buttonReset, buttonPause;
 
     RadioGroup radioBpmGroup;
+
+    final String START = "START";
+    final String RESUME = "RESUME";
 
     boolean pause = false;
     boolean start = true;
@@ -142,7 +146,9 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
                     ((RadioButton) findViewById(R.id.radio_bpm_60)).setChecked(true);
                 }
                 if (!start && pause) {
+                    //resume
                     timer.resume();
+                    pause = false;
                     buttonStart.setEnabled(false);
                     buttonPause.setEnabled(true);
                 } else if (start && !pause) {
@@ -152,7 +158,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
                     buttonStart.setEnabled(false);
                     buttonPause.setEnabled(true);
                     buttonStop.setEnabled(true);
-                    buttonReset.setEnabled(true);
+                    buttonReset.setEnabled(false);
                     start = false;
                 }
                 break;
@@ -166,6 +172,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
                     buttonReset.setEnabled(true);
                     buttonStop.setEnabled(true);
                     pause = true;
+                    buttonStart.setText(RESUME);
                 }
                 break;
 
@@ -174,6 +181,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
                 mHandler.sendEmptyMessage(MSG_STOP_TIMER);
 
                 buttonStop.setEnabled(false);
+                buttonPause.setEnabled(false);
                 buttonStart.setEnabled(false);
                 buttonReset.setEnabled(true);
                 break;
@@ -184,9 +192,12 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
                 textCounter.setText("");
                 textStopWatch.setText("");
 
+                buttonStart.setEnabled(true);
                 buttonPause.setEnabled(false);
                 buttonStop.setEnabled(false);
-                buttonStart.setEnabled(true);
+                buttonReset.setEnabled(false);
+                buttonStart.setText(START);
+                pause = false;
                 start = true;
                 break;
         }//switch
