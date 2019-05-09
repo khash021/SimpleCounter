@@ -23,7 +23,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
     final int MSG_STOP_TIMER = 1;
     final int MSG_UPDATE_TIMER = 2;
 
-    Stopwatch timer;
+    Counter counter;
     //refresh every 100 mSec
     final int REFRESH_RATE = 100;
 
@@ -52,12 +52,12 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
 
             switch (msg.what) {
                 case MSG_START_TIMER:
-                    timer.start(); //start timer
+                    counter.start(); //start counter
                     mHandler.sendEmptyMessage(MSG_UPDATE_TIMER);
                     break;
 
                 case MSG_UPDATE_TIMER:
-                    String input = timer.getBpmElapsed();
+                    String input = counter.getBpmElapsed();
                     if (input == null) {
                         Log.v(TAG, "input = null");
                         mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
@@ -74,7 +74,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
                     break;
                 case MSG_STOP_TIMER:
                     mHandler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
-                    timer.stop();//stop time
+                    MainActivity2.this.counter.stop();//stop time
                     break;
 
                 default:
@@ -147,13 +147,13 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
                 }
                 if (!start && pause) {
                     //resume
-                    timer.resume();
+                    counter.resume();
                     pause = false;
                     buttonStart.setEnabled(false);
                     buttonPause.setEnabled(true);
                 } else if (start && !pause) {
                     //start a new one
-                    timer = new Stopwatch(mBpm);
+                    counter = new Counter(mBpm);
                     mHandler.sendEmptyMessage(MSG_START_TIMER);
                     buttonStart.setEnabled(false);
                     buttonPause.setEnabled(true);
@@ -165,8 +165,8 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
 
             //PAUSE butoon
             case R.id.button_pause:
-                if (!(timer == null)) {
-                    timer.pause();
+                if (!(counter == null)) {
+                    counter.pause();
                     buttonPause.setEnabled(false);
                     buttonStart.setEnabled(true);
                     buttonReset.setEnabled(true);

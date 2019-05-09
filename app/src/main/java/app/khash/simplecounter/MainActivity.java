@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         mTimerText = findViewById(R.id.text_timer);
 
-        //initialize the boolean so that the button is prompting the start of the timer
+        //initialize the boolean so that the button is prompting the start of the counter
         mStart = true;
         mStartButton = findViewById(R.id.button_timer);
         mStartButton.setText("Start");
@@ -66,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
         }//if-else
     }//buttonClick
 
-    //function for starting the timer
+    //function for starting the counter
     private void startTimer() {
         mCountdownTimer.start();
 
     }//startTimer
 
-    //function for pausing the timer
+    //function for pausing the counter
     private void pauseTimer() {
         mCountdownTimer.cancel();
 

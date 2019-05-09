@@ -2,7 +2,7 @@ package app.khash.simplecounter;
 
 import android.util.Log;
 
-public class Stopwatch {
+public class Counter {
 
     String TAG = getClass().getName();
 
@@ -15,7 +15,7 @@ public class Stopwatch {
     private int bpm;
     private final float MINUTE = 60.0f;
 
-    public Stopwatch(int bpm) {
+    public Counter(int bpm) {
         this.bpm = bpm;
     }//Stopwatch
 
