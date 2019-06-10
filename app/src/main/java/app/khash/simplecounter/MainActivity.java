@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textStopWatch = findViewById(R.id.text_stop_watch);
+        textStopWatch = findViewById(R.id.text_timer);
         textCounter = findViewById(R.id.text_counter);
         textBpm = findViewById(R.id.text_bpm);
 
