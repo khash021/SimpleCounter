@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textStopWatch = findViewById(R.id.text_timer);
         textCounter = findViewById(R.id.text_counter);
         textBpm = findViewById(R.id.text_bpm);
+        textBpm.setOnClickListener(this);
 
         buttonStart = findViewById(R.id.button_start);
         buttonStart.setEnabled(true);
@@ -204,6 +205,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 pause = false;
                 start = true;
                 break;
+
+            //BPM edit text
+            case R.id.text_bpm:
+                //enable the cursor
+                textBpm.setCursorVisible(true);
+                break;
+
         }//switch
     }//onClick
 }
