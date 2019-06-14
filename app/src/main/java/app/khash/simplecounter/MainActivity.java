@@ -145,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     ((RadioButton) findViewById(R.id.radio_bpm_60)).setChecked(true);
                 }
+                //Disable the bpm text cursor
+                textBpm.setCursorVisible(false);
                 if (!start && pause) {
                     //resume
                     counter.resume();
@@ -189,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //RESET Button
             case R.id.button_reset:
                 textBpm.setText("");
+                //make cursor visible again
+                textBpm.setCursorVisible(true);
                 textCounter.setText("");
                 textStopWatch.setText("");
 
