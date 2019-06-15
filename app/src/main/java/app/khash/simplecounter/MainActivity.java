@@ -19,9 +19,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     String TAG = getClass().getName();
 
-    final int MSG_START_TIMER = 0;
-    final int MSG_STOP_TIMER = 1;
-    final int MSG_UPDATE_TIMER = 2;
+    //constants for the handler
+    private final int MSG_START_TIMER = 0;
+    private final int MSG_STOP_TIMER = 1;
+    private final int MSG_UPDATE_TIMER = 2;
+
+    //constants for the Saved Instance Bundle
+    private final static String SAVED_BPM = "saved_bpm";
+    private final static String SAVED_STATE = "saved_state";
+    private final static String STATE_RUNNING = "state_running";
+    private final static String STATE_PAUSED = "state_paused";
+    private final static String STATE_STOPPED = "state_stopped";
+    private final static String SAVED_ELAPSED = "saved_elapsed";
+    private final static String SAVED_COUNTER = "saved_counter";
 
     Counter counter;
     //refresh every 100 mSec
@@ -44,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean pause = false;
     boolean start = true;
 
+    String mCounter, mElapsed;
+
 
     Handler mHandler = new Handler() {
         @Override
@@ -64,11 +76,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     }
                     String[] bpmElapsed = input.split(";");
-                    String counter = bpmElapsed[0];
-                    String elapsed = bpmElapsed[1];
-                    Log.v(TAG, "C: " + counter + "; T= " + elapsed);
-                    textStopWatch.setText(elapsed);
-                    textCounter.setText(counter);
+                    mCounter = bpmElapsed[0];
+                    mElapsed = bpmElapsed[1];
+                    Log.v(TAG, "C: " + counter + "; T= " + mElapsed);
+                    textStopWatch.setText(mElapsed);
+                    textCounter.setText(mCounter);
                     //update the message every REFRESH_RATE
                     mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
                     break;
@@ -90,29 +102,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //find the views
         textStopWatch = findViewById(R.id.text_timer);
         textCounter = findViewById(R.id.text_counter);
+
         textBpm = findViewById(R.id.text_bpm);
-        textBpm.setOnClickListener(this);
 
         buttonStart = findViewById(R.id.button_start);
-        buttonStart.setEnabled(true);
-
         buttonStop = findViewById(R.id.button_stop);
-        buttonStop.setEnabled(false);
-
         buttonReset = findViewById(R.id.button_reset);
-        buttonReset.setEnabled(false);
-
         buttonPause = findViewById(R.id.button_pause);
-        buttonPause.setEnabled(false);
 
+        radioBpmGroup = findViewById(R.id.radio_group_bpm);
+
+        //set click listeners
+        textBpm.setOnClickListener(this);
         buttonStart.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
         buttonReset.setOnClickListener(this);
         buttonPause.setOnClickListener(this);
 
-        radioBpmGroup = findViewById(R.id.radio_group_bpm);
+        //check the savedInstanceState bundle to see whether it was an orientation change or not
+        if (savedInstanceState != null) {
+            //this means this a recreate and we need to retrieve our saved data and setup accordingly
+            //get the elapsed and counter values and set them
+            String elapsed = savedInstanceState.getString(SAVED_ELAPSED);
+            String counter = savedInstanceState.getString(SAVED_COUNTER);
+
+            //just as a precaution, lets check for null object
+            if (elapsed != null) {
+                mElapsed = elapsed;
+                textStopWatch.setText(mElapsed);
+            }
+            if (counter != null) {
+                mCounter = counter;
+                textCounter.setText(mCounter);
+            }
+
+        } else {
+            //Bundle is null and this is a new instance, so setup the default
+            //set the initial state of buttons
+            buttonStart.setEnabled(true);
+            buttonStop.setEnabled(false);
+            buttonReset.setEnabled(false);
+            buttonPause.setEnabled(false);
+        }
+
+        //radio buttons click listeners
         radioBpmGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -214,4 +250,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }//switch
     }//onClick
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        //get the values of elapsed time and counter and pass it to the bundle
+        outState.putString(SAVED_ELAPSED, mElapsed);
+        outState.putString(SAVED_COUNTER, mCounter);
+
+    }//onSaveInstanceState
 }
