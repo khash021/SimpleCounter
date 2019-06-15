@@ -25,15 +25,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int MSG_UPDATE_TIMER = 2;
 
     //constants for the Saved Instance Bundle
-    private final static String SAVED_BPM = "saved_bpm";
-    private final static String SAVED_STATE = "saved_state";
-    private final static String STATE_RUNNING = "state_running";
-    private final static String STATE_PAUSED = "state_paused";
-    private final static String STATE_STOPPED = "state_stopped";
+    public final static String SAVED_BPM = "saved_bpm";
+    public final static String SAVED_STATE = "saved_state";
+    public final static String STATE_RUNNING = "state_running";
+    public final static String STATE_PAUSED = "state_paused";
+    public final static String SAVED_START_TIME = "saved_start_time";
+    public final static String SAVED_PAUSE_TIME = "saved_pause_time";
+    public final static String SAVED_PAUSE_DIFF = "saved_pause_diff";
+    private final static String SAVED_COUNTER_BUNDLE = "saved_counter_bundle";
     private final static String SAVED_ELAPSED = "saved_elapsed";
     private final static String SAVED_COUNTER = "saved_counter";
 
-    Counter counter;
+    Counter mCounter;
     //refresh every 100 mSec
     final int REFRESH_RATE = 100;
 
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean pause = false;
     boolean start = true;
 
-    String mCounter, mElapsed;
+    String mCounterString, mElapsedString;
 
 
     Handler mHandler = new Handler() {
@@ -64,29 +67,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             switch (msg.what) {
                 case MSG_START_TIMER:
-                    counter.start(); //start counter
+                    mCounter.start(); //start mCounter
                     mHandler.sendEmptyMessage(MSG_UPDATE_TIMER);
                     break;
 
                 case MSG_UPDATE_TIMER:
-                    String input = counter.getBpmElapsed();
+                    String input = mCounter.getBpmElapsed();
                     if (input == null) {
                         Log.v(TAG, "input = null");
                         mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
                         break;
                     }
                     String[] bpmElapsed = input.split(";");
-                    mCounter = bpmElapsed[0];
-                    mElapsed = bpmElapsed[1];
-                    Log.v(TAG, "C: " + counter + "; T= " + mElapsed);
-                    textStopWatch.setText(mElapsed);
-                    textCounter.setText(mCounter);
+                    mCounterString = bpmElapsed[0];
+                    mElapsedString = bpmElapsed[1];
+                    Log.v(TAG, "C: " + mCounter + "; T= " + mElapsedString);
+                    textStopWatch.setText(mElapsedString);
+                    textCounter.setText(mCounterString);
                     //update the message every REFRESH_RATE
                     mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
                     break;
                 case MSG_STOP_TIMER:
                     mHandler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
-                    MainActivity.this.counter.stop();//stop time
+                    mCounter.stop();//stop time
                     break;
 
                 default:
@@ -124,20 +127,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //check the savedInstanceState bundle to see whether it was an orientation change or not
         if (savedInstanceState != null) {
-            //this means this a recreate and we need to retrieve our saved data and setup accordingly
-            //get the elapsed and counter values and set them
-            String elapsed = savedInstanceState.getString(SAVED_ELAPSED);
-            String counter = savedInstanceState.getString(SAVED_COUNTER);
+            //check to see whether there is a bundle with it which means we need to create a counter
+            //object, otherwise we will just show the counter and stopwatch values
+            Bundle counterObjectBundle = savedInstanceState.getBundle(SAVED_COUNTER_BUNDLE);
+            if (counterObjectBundle == null) {
+                //this means we just need to show the saved values
+                String elapsed = savedInstanceState.getString(SAVED_ELAPSED);
+                String counter = savedInstanceState.getString(SAVED_COUNTER);
 
-            //just as a precaution, lets check for null object
-            if (elapsed != null) {
-                mElapsed = elapsed;
-                textStopWatch.setText(mElapsed);
+                //just a dummy, WTF check
+                if (elapsed != null) {
+                    mElapsedString = elapsed;
+                    textStopWatch.setText(mElapsedString);
+                }
+                if (counter != null) {
+                    mCounterString = counter;
+                    textCounter.setText(mCounterString);
+                }
+
+            } else {
+                //this means we need to create a new counter object and set it up
+                mCounter = new Counter(counterObjectBundle);
+
+                //start the handler
+                mHandler.sendEmptyMessage(MSG_UPDATE_TIMER);
+
             }
-            if (counter != null) {
-                mCounter = counter;
-                textCounter.setText(mCounter);
-            }
+
 
         } else {
             //Bundle is null and this is a new instance, so setup the default
@@ -186,13 +202,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textBpm.setCursorVisible(false);
                 if (!start && pause) {
                     //resume
-                    counter.resume();
+                    mCounter.resume();
                     pause = false;
                     buttonStart.setEnabled(false);
                     buttonPause.setEnabled(true);
                 } else if (start && !pause) {
                     //start a new one
-                    counter = new Counter(mBpm);
+                    mCounter = new Counter(mBpm);
                     mHandler.sendEmptyMessage(MSG_START_TIMER);
                     buttonStart.setEnabled(false);
                     buttonPause.setEnabled(true);
@@ -204,8 +220,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //PAUSE butoon
             case R.id.button_pause:
-                if (!(counter == null)) {
-                    counter.pause();
+                if (!(mCounter == null)) {
+                    mCounter.pause();
                     buttonPause.setEnabled(false);
                     buttonStart.setEnabled(true);
                     buttonReset.setEnabled(true);
@@ -255,9 +271,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        //get the values of elapsed time and counter and pass it to the bundle
-        outState.putString(SAVED_ELAPSED, mElapsed);
-        outState.putString(SAVED_COUNTER, mCounter);
+        //check whether it is stopped, if yes, just pass the values
+        if (!buttonStop.isEnabled()) {
+            //get the values of elapsed time and mCounter and pass it to the bundle
+            outState.putString(SAVED_ELAPSED, mElapsedString);
+            outState.putString(SAVED_COUNTER, mCounterString);
+        } else {
+            //this means we have to get all the info and pass it along
+            if (mCounter != null) {
+                outState.putBundle(SAVED_COUNTER_BUNDLE, mCounter.getSaveBundle());
+            }
+        }
 
     }//onSaveInstanceState
 }
