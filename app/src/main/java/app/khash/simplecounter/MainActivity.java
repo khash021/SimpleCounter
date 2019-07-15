@@ -36,8 +36,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final static String SAVED_ELAPSED = "saved_elapsed";
     private final static String SAVED_COUNTER = "saved_counter";
 
+    //Counter class variable
     Counter mCounter;
-    //refresh every 100 mSec
+
+    //Handler refresh rate in ms
     final int REFRESH_RATE = 100;
 
     int mBpm;
@@ -60,24 +62,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String mCounterString, mElapsedString;
 
 
+    //the Handler that does the work of refreshing and getting new values from counter and updating
+    //the UI
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
             switch (msg.what) {
+                //start the timer (Here we start the counter) and start updating
                 case MSG_START_TIMER:
                     mCounter.start(); //start mCounter
                     mHandler.sendEmptyMessage(MSG_UPDATE_TIMER);
                     break;
 
+                //this is where we constantly get the elapsed from counter and update UI
                 case MSG_UPDATE_TIMER:
+                    //Get the bpm and elapsed tim from the counter
                     String input = mCounter.getBpmElapsed();
+                    //make sure it is not null
                     if (input == null) {
                         Log.v(TAG, "input = null");
                         mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
                         break;
                     }
+                    //update the UI
                     String[] bpmElapsed = input.split(";");
                     mCounterString = bpmElapsed[0];
                     mElapsedString = bpmElapsed[1];
@@ -87,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //update the message every REFRESH_RATE
                     mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
                     break;
+                //Stop the handler
                 case MSG_STOP_TIMER:
                     mHandler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
                     mCounter.stop();//stop time

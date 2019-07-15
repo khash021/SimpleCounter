@@ -20,6 +20,7 @@ public class Counter {
         this.bpm = bpm;
     }//Counter
 
+    //this is for creating a counter with previous values (such as orientation change)
     public Counter(Bundle savedBundle) {
 
         //get the info from the bundle
