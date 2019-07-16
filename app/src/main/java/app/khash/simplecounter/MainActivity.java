@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //views
     TextView textStopWatch, textCounter;
     EditText textBpm;
-    Button buttonStart, buttonStop, buttonReset, buttonPause;
+    Button buttonStart, buttonStop, buttonPause, buttonReset;
 
     RadioGroup radioBpmGroup;
 
