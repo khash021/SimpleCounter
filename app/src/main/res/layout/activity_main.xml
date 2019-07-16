@@ -55,8 +55,9 @@
         android:fontFamily="sans-serif"
         android:hint="@string/bpm"
         android:gravity="center"
-        android:inputType="numberSigned"
         android:textSize="20sp"
+        android:inputType="numberSigned"
+        android:imeOptions="actionDone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radio_group_bpm" />
