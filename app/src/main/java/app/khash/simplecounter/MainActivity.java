@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //TODO: on screen rotation when the counter is running, the buttons all reset
     //TODO: fix the blinking edit text (either get rid of it, or program it)
 
     //constants for the handler
@@ -284,6 +283,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             outState.putString(SAVED_ELAPSED, elapsedString);
             outState.putString(SAVED_COUNTER, counterString);
 
+        } else if(appState == STATE_RESET) {
+            //just pass in the app state so it could be setup accordingly on recreate
+            outState.putInt(SAVED_STATE, appState);
         } else {
             //this means we have to get all the info and pass it along
             if (counter != null) {
@@ -357,13 +359,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }//if
 
         //setup buttons
-        buttonStart.setEnabled(true);
-        buttonPause.setEnabled(false);
-        buttonStop.setEnabled(true);
-        buttonReset.setEnabled(true);
-
-        //change the start button text
-        buttonStart.setText(R.string.resume);
+        setupButtonsPaused();
 
         //pause the counter (after the dummy check of counter)
         counter.pause();
