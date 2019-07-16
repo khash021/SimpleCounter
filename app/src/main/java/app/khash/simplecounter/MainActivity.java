@@ -97,7 +97,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //Stop the handler
                 case MSG_STOP_TIMER:
                     handler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
-                    counter.stop();//stop time
+                    //WTF dummy check in case there is no counter object
+                    if (counter != null) {
+                        counter.stop();//stop time
+                    }
                     break;
 
                 default:
