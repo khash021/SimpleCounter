@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 public class Counter {
 
-    String TAG = getClass().getName();
-
     private long startTime = 0;
     private long stopTime = 0;
     private long pauseTime = 0;
@@ -83,8 +81,6 @@ public class Counter {
             float bpmFloat = elapsedMilli * (bpm / MINUTE);
             int counter = (int) bpmFloat/1000;
             String output = counter + ";" + (elapsedMilli /1000);
-//            Log.v(TAG, "E-" + elapsedMilli + " : " + "P-" + pauseDiff + " : " +
-//                    "BPM-" + bpmFloat + " : " + "C-" + counter);
             return output;
         } else {
             return null;
@@ -113,10 +109,10 @@ public class Counter {
         }
     }//getBpm
 
-    //get all the information regarding the current Counter object, so it could be passed along the
-    //savedInstance Bundle to be used to recreate another identical object
-    //it is passed using the following format   (state;bpm;startTime;pauseTime;pauseDiff)
-    //1 for running state and 0 for paused state
+    /* get all the information regarding the current Counter object, so it could be passed along the
+       savedInstance Bundle to be used to recreate another identical object it is passed using the
+       following format   (state;bpm;startTime;pauseTime;pauseDiff)
+       1 for running state and 0 for paused state */
     public Bundle getSaveBundle() {
         //create and initialize a new Bundle object
         Bundle output = new Bundle();
