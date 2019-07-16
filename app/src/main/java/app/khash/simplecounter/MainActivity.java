@@ -155,9 +155,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     textCounter.setText(counterString);
                 }
 
+                //setup the UI
+                int state = savedInstanceState.getInt(SAVED_STATE, 0);
+                //zero value means there was nothing in the bundle. Otherwise set it up
+                if (state !=0) {
+                    //set the app state
+                    appState = state;
+                    //use the helper method to setup the UI
+                    setupButtons(appState);
+                }//if
+
             } else {
                 //this means we need to create a new counter object and set it up
                 counter = new Counter(counterObjectBundle);
+
+                //setup the UI
+                int state = savedInstanceState.getInt(SAVED_STATE, 0);
+                //zero value means there was nothing in the bundle. Otherwise set it up
+                if (state !=0) {
+                    //set the app state
+                    appState = state;
+                    //use the helper method to setup the UI
+                    setupButtons(appState);
+                }//if
+
+                //if this is a pause, we also wanna just show the results
+                String elapsed = savedInstanceState.getString(SAVED_ELAPSED);
+                String counter = savedInstanceState.getString(SAVED_COUNTER);
+
+                //just a dummy, WTF check
+                if (elapsed != null) {
+                    elapsedString = elapsed;
+                    textStopWatch.setText(elapsedString);
+                }
+                if (counter != null) {
+                    counterString = counter;
+                    textCounter.setText(counterString);
+                }
 
                 //start the handler
                 handler.sendEmptyMessage(MSG_UPDATE_TIMER);
@@ -253,13 +287,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //get the values of elapsed time and counter and pass it to the bundle
             outState.putString(SAVED_ELAPSED, elapsedString);
             outState.putString(SAVED_COUNTER, counterString);
+
         } else {
             //this means we have to get all the info and pass it along
             if (counter != null) {
+                //pass along the counter info as a bundle
                 outState.putBundle(SAVED_COUNTER_BUNDLE, counter.getSaveBundle());
-            }
+                //add the app state so that we can setup the UI in onCreate again
+                outState.putInt(SAVED_STATE, appState);
+                //if this is the paused state, we wanna just pass along the numbers
+                if (appState == STATE_PAUSED) {
+                    outState.putString(SAVED_ELAPSED, elapsedString);
+                    outState.putString(SAVED_COUNTER, counterString);
+                }//if-paused
+            }//if counter not null
         }
-
     }//onSaveInstanceState
 
     /* ------------------HELPER METHODS------------------------   */
@@ -348,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }//setupPausedState
 
     //helper method for setting up the UI for stopped
-    private void setupStoppedState(){
+    private void setupStoppedState() {
         //setup buttons
         buttonStop.setEnabled(false);
         buttonPause.setEnabled(false);
@@ -361,5 +403,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //set app state
         appState = STATE_STOPPED;
     }//setupStoppedState
+
+    /* Helper method that takes in the the app state as an argument and just setup the buttons and
+       UI based on the app state used for when rotating rhe device */
+    private void setupButtons(int appState) {
+        //use a switch argument based on appState to configure buttons
+        switch (appState) {
+            case STATE_RUNNING:
+                //setup buttons
+                buttonStart.setEnabled(false);
+                buttonPause.setEnabled(true);
+                buttonStop.setEnabled(true);
+                buttonReset.setEnabled(false);
+
+                //Disable the bpm text cursor
+                textBpm.setCursorVisible(false);
+                break;
+            case STATE_PAUSED:
+                //setup buttons
+                buttonStart.setEnabled(true);
+                buttonPause.setEnabled(false);
+                buttonStop.setEnabled(true);
+                buttonReset.setEnabled(true);
+
+                //change the start button text
+                buttonStart.setText(R.string.resume);
+
+                //Disable the bpm text cursor
+                textBpm.setCursorVisible(false);
+                break;
+            case STATE_STOPPED:
+                //setup buttons
+                buttonStop.setEnabled(false);
+                buttonPause.setEnabled(false);
+                buttonStart.setEnabled(false);
+                buttonReset.setEnabled(true);
+                break;
+            case STATE_RESET:
+                //set the buttons
+                buttonStart.setEnabled(true);
+                buttonPause.setEnabled(false);
+                buttonStop.setEnabled(false);
+                buttonReset.setEnabled(false);
+
+                //reset the texts
+                textBpm.setText("");
+                textCounter.setText("");
+                textStopWatch.setText("");
+
+                //change start button text
+                buttonStart.setText(R.string.start);
+
+                //make cursor visible again
+                textBpm.setCursorVisible(true);
+                break;
+        }//switch
+    }//setupButtons
 
 }//MainActivity
