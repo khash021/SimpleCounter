@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,11 +13,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //TODO: add comments and start cleaning up the code and variables
-    //TODO: group reset and other tasks into separate functions for the buttons
+    //TODO: on screen rotation when the counter is running, the buttons all reset
     //TODO: fix the blinking edit text (either get rid of it, or program it)
-
-    String TAG = getClass().getName();
 
     //constants for the handler
     private final int MSG_START_TIMER = 0;
@@ -36,10 +32,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final static String SAVED_COUNTER_BUNDLE = "saved_counter_bundle";
     private final static String SAVED_ELAPSED = "saved_elapsed";
     private final static String SAVED_COUNTER = "saved_counter";
-
-    //other constants
-    final String START = "START";
-    final String RESUME = "RESUME";
 
     public final static int STATE_RESET = 1;
     public final static int STATE_RUNNING = 2;
@@ -90,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String input = counter.getBpmElapsed();
                     //make sure it is not null
                     if (input == null) {
-                        Log.v(TAG, "input = null");
                         handler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
                         break;
                     }
@@ -98,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String[] bpmElapsed = input.split(";");
                     counterString = bpmElapsed[0];
                     elapsedString = bpmElapsed[1];
-                    Log.v(TAG, "C: " + counter + "; T= " + elapsedString);
                     textStopWatch.setText(elapsedString);
                     textCounter.setText(counterString);
                     //update the message every REFRESH_RATE
@@ -119,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v(TAG, "onCreate Called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -286,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textStopWatch.setText("");
 
         //change start button text
-        buttonStart.setText(START);
+        buttonStart.setText(R.string.start);
 
         //make cursor visible again
         textBpm.setCursorVisible(true);
@@ -346,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonReset.setEnabled(true);
 
         //change the start button text
-        buttonStart.setText(RESUME);
+        buttonStart.setText(R.string.resume);
 
         //pause the counter (after the dummy check of counter)
         counter.pause();

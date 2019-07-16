@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">SimpleCounter</string>
+
+    <string name="bpm">BPM</string>
+    <string name="_120">120</string>
+    <string name="_60">60</string>
+    <string name="_40">40</string>
+
+    <string name="select_bpm_text">Please select BPM or enter manually</string>
+
+    <string name="timer">Timer</string>
+    <string name="counter">Counter</string>
+    <string name="start">Start</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="reset">Reset</string>
+    <string name="resume">Resume</string>
 </resources>
