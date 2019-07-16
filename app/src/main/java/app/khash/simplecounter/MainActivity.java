@@ -245,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //setup resume
                     setupResumeState();
                 } else if (appState == STATE_STOPPED || appState == STATE_RESET) {
-
                     //start a new counter and setup
                     setupRunningState();
                 }
@@ -253,19 +252,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //PAUSE button
             case R.id.button_pause:
-                //setup pause
                 setupPausedState();
                 break;
 
             //STOP button
             case R.id.button_stop:
-                //stop the counter and setup UI
                 setupStoppedState();
                 break;
 
             //RESET Button
             case R.id.button_reset:
-                //reset UI
                 setupResetState();
                 break;
 
@@ -309,18 +305,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //helper method for setting up the UI for reset state
     private void setupResetState() {
         //set the buttons
-        buttonStart.setEnabled(true);
-        buttonPause.setEnabled(false);
-        buttonStop.setEnabled(false);
-        buttonReset.setEnabled(false);
+        setupButtonsReset();
 
         //reset the texts
-        textBpm.setText("");
-        textCounter.setText("");
-        textStopWatch.setText("");
+        resetTexts();
 
-        //change start button text
-        buttonStart.setText(R.string.start);
 
         //make cursor visible again
         textBpm.setCursorVisible(true);
@@ -332,10 +321,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //helper method for setting up the UI for start state (counter is running)
     private void setupRunningState() {
         //setup buttons
-        buttonStart.setEnabled(false);
-        buttonPause.setEnabled(true);
-        buttonStop.setEnabled(true);
-        buttonReset.setEnabled(false);
+        setupButtonsRunning();
 
         //Disable the bpm text cursor
         textBpm.setCursorVisible(false);
@@ -351,10 +337,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //helper method for setting up the UI for resume state
     private void setupResumeState() {
         //setup buttons
-        buttonStart.setEnabled(false);
-        buttonPause.setEnabled(true);
-        buttonStop.setEnabled(true);
-        buttonReset.setEnabled(false);
+        setupButtonsRunning();
 
         //Disable the bpm text cursor
         textBpm.setCursorVisible(false);
@@ -392,10 +375,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //helper method for setting up the UI for stopped
     private void setupStoppedState() {
         //setup buttons
-        buttonStop.setEnabled(false);
-        buttonPause.setEnabled(false);
-        buttonStart.setEnabled(false);
-        buttonReset.setEnabled(true);
+        setupButtonsStopped();
 
         //stop the handler
         handler.sendEmptyMessage(MSG_STOP_TIMER);
@@ -411,53 +391,80 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (appState) {
             case STATE_RUNNING:
                 //setup buttons
-                buttonStart.setEnabled(false);
-                buttonPause.setEnabled(true);
-                buttonStop.setEnabled(true);
-                buttonReset.setEnabled(false);
+                setupButtonsRunning();
 
                 //Disable the bpm text cursor
                 textBpm.setCursorVisible(false);
                 break;
             case STATE_PAUSED:
                 //setup buttons
-                buttonStart.setEnabled(true);
-                buttonPause.setEnabled(false);
-                buttonStop.setEnabled(true);
-                buttonReset.setEnabled(true);
+                setupButtonsPaused();
 
-                //change the start button text
-                buttonStart.setText(R.string.resume);
+
 
                 //Disable the bpm text cursor
                 textBpm.setCursorVisible(false);
                 break;
             case STATE_STOPPED:
                 //setup buttons
-                buttonStop.setEnabled(false);
-                buttonPause.setEnabled(false);
-                buttonStart.setEnabled(false);
-                buttonReset.setEnabled(true);
+                setupButtonsStopped();
                 break;
             case STATE_RESET:
                 //set the buttons
-                buttonStart.setEnabled(true);
-                buttonPause.setEnabled(false);
-                buttonStop.setEnabled(false);
-                buttonReset.setEnabled(false);
+                setupButtonsReset();
 
                 //reset the texts
-                textBpm.setText("");
-                textCounter.setText("");
-                textStopWatch.setText("");
-
-                //change start button text
-                buttonStart.setText(R.string.start);
+                resetTexts();
 
                 //make cursor visible again
                 textBpm.setCursorVisible(true);
                 break;
         }//switch
     }//setupButtons
+
+    //helper method for resetting all the texts
+    private void resetTexts() {
+        textBpm.setText("");
+        textCounter.setText("");
+        textStopWatch.setText("");
+    }//resetTexts
+
+    //Helper method for setting up buttons for reset state
+    private void setupButtonsReset() {
+        buttonStart.setEnabled(true);
+        buttonPause.setEnabled(false);
+        buttonStop.setEnabled(false);
+        buttonReset.setEnabled(false);
+
+        //change start button text
+        buttonStart.setText(R.string.start);
+    }//setupButtonsReset
+
+    //Helper method for setting up buttons for running state
+    private void setupButtonsRunning() {
+        buttonStart.setEnabled(false);
+        buttonPause.setEnabled(true);
+        buttonStop.setEnabled(true);
+        buttonReset.setEnabled(false);
+    }//setupButtonsRunning
+
+    //Helper method for setting up buttons for paused state
+    private void setupButtonsPaused() {
+        buttonStart.setEnabled(true);
+        buttonPause.setEnabled(false);
+        buttonStop.setEnabled(true);
+        buttonReset.setEnabled(true);
+
+        //change the start button text
+        buttonStart.setText(R.string.resume);
+    }//setupButtonsPaused
+
+    //Helper method for setting up buttons for stopped state
+    private void setupButtonsStopped() {
+        buttonStop.setEnabled(false);
+        buttonPause.setEnabled(false);
+        buttonStart.setEnabled(false);
+        buttonReset.setEnabled(true);
+    }//setupButtonsStopped
 
 }//MainActivity
