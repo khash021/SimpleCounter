@@ -15,7 +15,7 @@ public class Counter {
     private int bpm;
     private final float MINUTE = 60.0f;
 
-    //for creating a new mCounter object
+    //for creating a new counter object
     public Counter(int bpm) {
         this.bpm = bpm;
     }//Counter
@@ -31,9 +31,9 @@ public class Counter {
         this.running = true;
 
         String state = savedBundle.getString(MainActivity.SAVED_STATE);
-        if (state.equalsIgnoreCase(MainActivity.STATE_RUNNING)) {
+        if (state.equalsIgnoreCase(MainActivity.SAVED_STATE_RUNNING)) {
             this.pause = false;
-        } else if (state.equalsIgnoreCase(MainActivity.STATE_PAUSED)) {
+        } else if (state.equalsIgnoreCase(MainActivity.SAVED_STATE_PAUSED)) {
             this.pause = true;
         }
     }//Counter
@@ -100,7 +100,7 @@ public class Counter {
         return ((stopTime - startTime) / 1000);
     }//getElapsedSecs
 
-    //get mCounter value based on bpm
+    //get counter value based on bpm
     public int getBpm() {
         if (running) {
             long elapsedMilli = getElapsedMilli();
@@ -123,9 +123,9 @@ public class Counter {
         if(running) {
             String state;
             if (pause) {
-                state = MainActivity.STATE_PAUSED;
+                state = MainActivity.SAVED_STATE_PAUSED;
             } else {
-                state = MainActivity.STATE_RUNNING;
+                state = MainActivity.SAVED_STATE_RUNNING;
             }
 
             //put the data in the Bundle
