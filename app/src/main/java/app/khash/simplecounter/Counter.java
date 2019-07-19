@@ -2,6 +2,12 @@ package app.khash.simplecounter;
 
 import android.os.Bundle;
 
+/**
+ * Utility class for SimpleCounter app responsible for keeping the time and bpm calculations.
+ * It is responsible for providing elapsed time (stop watch) and the corresponding counter count
+ * based on the specified bpm.
+ */
+
 public class Counter {
 
     private long startTime = 0;

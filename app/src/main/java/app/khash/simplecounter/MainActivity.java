@@ -11,6 +11,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+/**
+ * Main class for SimpleCounter app
+ */
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //TODO: fix the blinking edit text (either get rid of it, or program it)
