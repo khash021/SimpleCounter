@@ -17,4 +17,9 @@
     <string name="stop">Stop</string>
     <string name="reset">Reset</string>
     <string name="resume">Resume</string>
+    <string name="done">Done</string>
+    <string name="bpm_calc_instructions">Use the \"+\" button to record each event while the timer is
+         running.\nClick Stop to calculate the bpm.\nClick Done to go back to the Home Screen.
+    </string>
+    <string name="plus_sign">+</string>
 </resources>
