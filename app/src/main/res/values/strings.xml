@@ -6,7 +6,7 @@
     <string name="_60">60</string>
     <string name="_40">40</string>
 
-    <string name="select_bpm_text">Please select BPM or enter manually</string>
+    <string name="select_bpm_text">Please select BPM, enter manually, or use BPM Calculator</string>
 
     <string name="timer">Timer</string>
     <string name="counter">Counter</string>
