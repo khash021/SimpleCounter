@@ -21,7 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@id/text_select"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_select">
 
         <RadioButton
@@ -50,14 +51,28 @@
         android:id="@+id/text_bpm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:hint="@string/bpm"
         android:inputType="numberSigned"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/radio_group_bpm"
-        app:layout_constraintStart_toEndOf="@id/radio_group_bpm" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radio_group_bpm"/>
+
+    <Button
+        android:id="@+id/button_calc_bpm"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:text="@string/bpm_calc"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/text_bpm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/radio_group_bpm"
+        app:layout_constraintTop_toTopOf="@+id/radio_group_bpm" />
 
 
     <LinearLayout
