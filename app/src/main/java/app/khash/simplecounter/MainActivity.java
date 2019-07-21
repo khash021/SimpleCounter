@@ -1,5 +1,6 @@
 package app.khash.simplecounter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +24,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int MSG_START_TIMER = 0;
     private final int MSG_STOP_TIMER = 1;
     private final int MSG_UPDATE_TIMER = 2;
+
+    //constant for intent extra (for results)
+    public static final int BPM_REQUEST = 1;
 
     //constants for the Saved Instance Bundle
     public final static String SAVED_BPM = "saved_bpm";
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //views
     TextView textStopWatch, textCounter;
     EditText textBpm;
-    Button buttonStart, buttonStop, buttonPause, buttonReset;
+    Button buttonStart, buttonStop, buttonPause, buttonReset, buttorBpmCalc;
 
     RadioGroup radioBpmGroup;
 
@@ -125,18 +129,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textBpm = findViewById(R.id.text_bpm);
 
         buttonStart = findViewById(R.id.button_start);
-        buttonStop = findViewById(R.id.button_stop);
-        buttonReset = findViewById(R.id.button_reset);
         buttonPause = findViewById(R.id.button_pause);
+        buttonReset = findViewById(R.id.button_reset);
+        buttonStop = findViewById(R.id.button_stop);
+        buttorBpmCalc = findViewById(R.id.button_calc_bpm);
 
         radioBpmGroup = findViewById(R.id.radio_group_bpm);
 
         //set click listeners
         textBpm.setOnClickListener(this);
         buttonStart.setOnClickListener(this);
+        buttonPause.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
         buttonReset.setOnClickListener(this);
-        buttonPause.setOnClickListener(this);
+        buttorBpmCalc.setOnClickListener(this);
+
 
         //check the savedInstanceState bundle to see whether it was an orientation change or not
         if (savedInstanceState != null) {
@@ -274,6 +281,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textBpm.setCursorVisible(true);
                 break;
 
+            //BPM Calculator
+            case R.id.button_calc_bpm:
+                //start bpm calculator activity for results
+                Intent bpmCalcIntent = new Intent(this, BpmCalculatorActivity.class);
+                startActivityForResult(bpmCalcIntent, BPM_REQUEST);
         }//switch
     }//onClick
 
@@ -436,6 +448,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonStop.setEnabled(false);
         buttonReset.setEnabled(false);
 
+        buttorBpmCalc.setEnabled(true);
+
         //change start button text
         buttonStart.setText(R.string.start);
     }//setupButtonsReset
@@ -446,6 +460,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonPause.setEnabled(true);
         buttonStop.setEnabled(true);
         buttonReset.setEnabled(false);
+
+        buttorBpmCalc.setEnabled(false);
     }//setupButtonsRunning
 
     //Helper method for setting up buttons for paused state
@@ -454,6 +470,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonPause.setEnabled(false);
         buttonStop.setEnabled(true);
         buttonReset.setEnabled(true);
+
+        buttorBpmCalc.setEnabled(false);
 
         //change the start button text
         buttonStart.setText(R.string.resume);
@@ -465,6 +483,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonPause.setEnabled(false);
         buttonStart.setEnabled(false);
         buttonReset.setEnabled(true);
+
+        buttorBpmCalc.setEnabled(false);
     }//setupButtonsStopped
 
 }//MainActivity
