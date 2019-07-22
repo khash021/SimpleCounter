@@ -13,9 +13,9 @@ import android.widget.TextView;
  */
 
 public class BpmCalculatorActivity extends AppCompatActivity implements View.OnClickListener {
-
-    //TODO: update landscape layout for bpm box
+    
     //TODO: SavedInstances
+    //TODO: Handle special cases for bpm (no timer, no count)
 
 
     private Button buttonStart, buttonStop, buttonReset, buttonDone, buttonCounterIncrease;
@@ -145,7 +145,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
                 int bpm = getBpm(count);
                 //returns -1 if there was a problem
                 if (bpm != -1) {
-                    textBpm.setText(bpm + getString(R.string.bpm_suffix));
+                    textBpm.setText(Integer.toString(bpm));
                 }
                 appState = STATE_STOPPED;
                 break;

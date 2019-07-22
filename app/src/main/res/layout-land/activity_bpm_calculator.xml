@@ -14,20 +14,20 @@
         android:gravity="center"
         android:padding="5dp"
         android:text="@string/bpm_calc_instructions_landscape"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <LinearLayout
         android:id="@+id/linear_layout_timer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/text_counter"
         app:layout_constraintTop_toBottomOf="@id/text_instruction">
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:fontFamily="sans-serif"
-            android:textSize="36sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -53,13 +53,11 @@
         android:id="@+id/text_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:fontFamily="sans-serif"
-        android:hint="@string/counter"
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_layout_timer" />
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/linear_layout_timer" />
 
     <Button
         android:id="@+id/button_counter_increase"
@@ -71,9 +69,32 @@
         android:paddingBottom="0dp"
         android:text="@string/plus_sign"
         android:textSize="50sp"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         app:layout_constraintBaseline_toBaselineOf="@id/text_counter"
         app:layout_constraintStart_toEndOf="@id/text_counter" />
+
+    <TextView
+        android:id="@+id/text_bpm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_counter"
+        app:layout_constraintBottom_toTopOf="@id/button_stop"/>
+
+    <TextView
+        android:id="@+id/text_bpm_suffix"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/bpm_suffix"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/text_bpm"
+        app:layout_constraintStart_toEndOf="@id/text_bpm"/>
 
 
     <Button
@@ -99,8 +120,8 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/button_done"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/button_reset"
@@ -130,3 +151,4 @@
 
 
 </android.support.constraint.ConstraintLayout>
+
