@@ -76,7 +76,7 @@ public class Counter {
     }//resume
 
 
-    // elaspsed time in milliseconds
+    // elapsed time in milliseconds
     public long getElapsedMilli() {
         if (running) {
             return (System.currentTimeMillis() -pauseDiff) - startTime;
@@ -101,7 +101,7 @@ public class Counter {
     }//getBpmElapsed
 
     //returns the elapsed seconds String with three decimal points given the long input in millisec
-    public static String getElapsedDecimalString(long elapsedMilli) {
+    public static String getTestElapsedDecimalString(long elapsedMilli) {
         //result variable
         String result;
 
@@ -115,6 +115,16 @@ public class Counter {
         result = decimalFormat.format(elapsedSec);
 
         return result;
+    }//getTestElapsedDecimalString
+
+    //return elapsed seconds in 3 decimal format in String
+    public String getElapsedDecimalString() {
+        if (!running) {return null; }
+
+        //get the elapsed time
+        long elapsedLong = getElapsedMilli();
+
+        return getTestElapsedDecimalString(elapsedLong);
     }//getElapsedDecimalString
 
 
