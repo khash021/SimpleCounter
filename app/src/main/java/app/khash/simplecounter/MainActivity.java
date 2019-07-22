@@ -318,6 +318,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }//onSaveInstanceState
 
+    //Extract the calculated bpm
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //make sure it is the right result
+        if (requestCode == BPM_REQUEST) {
+            //make sure it is OK result
+            if (resultCode == RESULT_OK) {
+                int bpmCalculated = data.getIntExtra(BpmCalculatorActivity.EXTRA_REPLY_BPM, -1);
+                //make sure we got something
+                if (bpmCalculated != -1) {
+                    //set the bpm
+                    bpm = bpmCalculated;
+                    textBpm.setText(Integer.toString(bpm));
+                    textBpm.setCursorVisible(false);
+                }
+            }
+        }
+    }
+
     /* ------------------HELPER METHODS------------------------   */
 
     //helper method for setting up the UI for reset state
