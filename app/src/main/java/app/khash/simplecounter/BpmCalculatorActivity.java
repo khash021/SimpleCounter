@@ -1,6 +1,8 @@
 package app.khash.simplecounter;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -12,17 +14,21 @@ import android.widget.TextView;
 
 public class BpmCalculatorActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //TODO: update landscape layout for bpm box
+    //TODO: SavedInstances
+
 
     private Button buttonStart, buttonStop, buttonReset, buttonDone, buttonCounterIncrease;
-    private TextView textTimer, textCounter;
+    private TextView textTimer, textCounter, textBpm, textBpmSuffix;
 
     //to keep track of the timer
-    private int counter;
+    private int count;
+    private long elapsedLong;
 
     //constants to keep track of app state to be used for rotation events
     private final static int STATE_RESET = 1;
     private final static int STATE_RUNNING = 2;
-    private final static int STATE_STOPEED = 3;
+    private final static int STATE_STOPPED = 3;
     private int appState;
 
     //constants for the handler
@@ -33,55 +39,52 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
     //Handler refresh rate in ms
     final int REFRESH_RATE = 100;
 
-    //BPM Calculator class variable
-    BpmCalculator bpmCalculator;
+    //Counter object
+    Counter counter;
 
     //the Handler that does the work of refreshing and getting new values from  and updating
     //the UI
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//
-//            switch (msg.what) {
-//                //start the timer (Here we start the counter) and start updating
-//                case MSG_START_TIMER:
-//                    counter.start(); //start counter
-//                    handler.sendEmptyMessage(MSG_UPDATE_TIMER);
-//                    break;
-//
-//                //this is where we constantly get the elapsed from counter and update UI
-//                case MSG_UPDATE_TIMER:
-//                    //Get the bpm and elapsed tim from the counter
-//                    String input = counter.getBpmElapsed();
-//                    //make sure it is not null
-//                    if (input == null) {
-//                        handler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
-//                        break;
-//                    }
-//                    //update the UI
-//                    String[] bpmElapsed = input.split(";");
-//                    counterString = bpmElapsed[0];
-//                    elapsedString = bpmElapsed[1];
-//                    textStopWatch.setText(elapsedString);
-//                    textCounter.setText(counterString);
-//                    //update the message every REFRESH_RATE
-//                    handler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
-//                    break;
-//                //Stop the handler
-//                case MSG_STOP_TIMER:
-//                    handler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
-//                    //WTF dummy check in case there is no counter object
-//                    if (counter != null) {
-//                        counter.stop();//stop time
-//                    }
-//                    break;
-//
-//                default:
-//                    break;
-//            }
-//        }
-//    };//handler
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            switch (msg.what) {
+                //start the timer (Here we start the counter) and start updating
+                case MSG_START_TIMER:
+                    counter.start(); //start counter
+                    handler.sendEmptyMessage(MSG_UPDATE_TIMER);
+                    break;
+
+                //this is where we constantly get the elapsed from counter and update UI
+                case MSG_UPDATE_TIMER:
+                    //Get the bpm and elapsed tim from the counter
+                    String elapsed = counter.getElapsedDecimalString();
+                    elapsedLong = counter.getElapsedMilli();
+                    //make sure it is not null
+                    if (elapsed == null) {
+                        handler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
+                        break;
+                    }
+                    //update the UI
+                    textTimer.setText(elapsed);
+                    //update the message every REFRESH_RATE
+                    handler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE);
+                    break;
+                //Stop the handler
+                case MSG_STOP_TIMER:
+                    handler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
+                    //WTF dummy check in case there is no counter object
+                    if (counter != null) {
+                        counter.stop();//stop time
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };//handler
 
 
     @Override
@@ -92,6 +95,10 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         //find views
         textTimer = findViewById(R.id.text_timer);
         textCounter = findViewById(R.id.text_counter);
+        textBpm = findViewById(R.id.text_bpm);
+        textBpmSuffix = findViewById(R.id.text_bpm_suffix);
+
+        textBpmSuffix.setVisibility(View.INVISIBLE);
 
         buttonStart = findViewById(R.id.button_start);
         buttonStop = findViewById(R.id.button_stop);
@@ -108,6 +115,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
 
         //TODO: figure out the savedInstances
 
+        resetTexts();
 
     }//onCreate
 
@@ -116,10 +124,66 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            //increase the count by one
+            case R.id.button_counter_increase:
+                count++;
+                textCounter.setText(Integer.toString(count));
+                break;
+            //start button
+            case R.id.button_start:
+                setupButtonsRunning();
+                resetTexts();
+                counter = new Counter();
+                counter.start();
+                handler.sendEmptyMessage(MSG_START_TIMER);
+                appState = STATE_RUNNING;
+                break;
+            //stop button
+            case R.id.button_stop:
+                handler.sendEmptyMessage(MSG_STOP_TIMER);
+                setupButtonsStopped();
+                int bpm = getBpm(count);
+                //returns -1 if there was a problem
+                if (bpm != -1) {
+                    textBpm.setText(bpm + getString(R.string.bpm_suffix));
+                }
+                appState = STATE_STOPPED;
+                break;
+            //reset button
+            case R.id.button_reset:
+                setupButtonsReset();
+                resetTexts();
+                count = 0;
+                appState = STATE_RESET;
+                break;
+            //button done
+            case R.id.button_done:
+                //TODO: send data back
+                break;
 
         }//switch
 
     }//onClick
+
+    /**  helper method for returning the calculated bpm. The method has an argument count,
+     *   which is the counter integer from the user (count)
+         returns -1 if the counter is not running */
+    public int getBpm(int count) {
+        //check to make sure count is not zero
+        if (count < 1) {
+            return -1;
+        }
+
+        float MINUTE_MILLI = 60000.0f;
+        //calculate bpm long
+        float bmpFloat = (count * MINUTE_MILLI) / elapsedLong;
+
+        //cast into int, we do this instead of rounding to the nearest, because a bpm of 2.9 does
+        //not make sense and it is still 2.
+        int bpm = (int) bmpFloat;
+
+        return bpm;
+    }//getBpm
 
 
     @Override
@@ -135,6 +199,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         buttonReset.setEnabled(false);
         buttonCounterIncrease.setEnabled(false);
         buttonDone.setEnabled(false);
+        textBpmSuffix.setVisibility(View.INVISIBLE);
     }//setupButtonsReset
 
     //Helper method for setting up buttons for running state
@@ -144,6 +209,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         buttonReset.setEnabled(false);
         buttonCounterIncrease.setEnabled(true);
         buttonDone.setEnabled(false);
+        textBpmSuffix.setVisibility(View.INVISIBLE);
     }//setupButtonsRunning
 
     //Helper method for setting up buttons for stopped state
@@ -153,12 +219,14 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         buttonReset.setEnabled(true);
         buttonCounterIncrease.setEnabled(false);
         buttonDone.setEnabled(true);
+        textBpmSuffix.setVisibility(View.VISIBLE);
     }//setupButtonsStopped
 
     //helper method for resetting all the texts
     private void resetTexts() {
         textTimer.setText(R.string.zero_decimal);
         textCounter.setText(R.string.zero);
+        textBpm.setText("");
     }//resetTexts
 
 }//BpmCalculatorActivity
