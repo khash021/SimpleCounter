@@ -38,11 +38,11 @@ public class BpmCalculator {
         long elapsedMilli = System.currentTimeMillis() - startTime;
 
         //calculate bpm long
-        float bpmLong = (count * MINUTE_MILLI) / elapsedMilli;
+        float bpmFloat = (count * MINUTE_MILLI) / elapsedMilli;
 
         //cast into int, we do this instead of rounding to the nearest, because a bpm of 2.9 does
         //not make sense and it is still 2.
-        int bpm = (int) bpmLong;
+        int bpm = (int) bpmFloat;
 
         return bpm;
     }//getBpm
