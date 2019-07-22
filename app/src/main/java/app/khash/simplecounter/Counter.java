@@ -2,6 +2,8 @@ package app.khash.simplecounter;
 
 import android.os.Bundle;
 
+import java.text.DecimalFormat;
+
 /**
  * Utility class for SimpleCounter app responsible for keeping the time and bpm calculations.
  * It is responsible for providing elapsed time (stop watch) and the corresponding counter count
@@ -18,6 +20,11 @@ public class Counter {
     private boolean pause = false;
     private int bpm;
     private final float MINUTE = 60.0f;
+    private final static float MINUTE_MILLI = 60000.0f;
+    private final static float SECOND_MILLI = 1000.0f;
+
+    //default constructor
+    public Counter() {}
 
     //for creating a new counter object
     public Counter(int bpm) {
@@ -93,8 +100,25 @@ public class Counter {
         }
     }//getBpmElapsed
 
+    //returns the elapsed seconds String with three decimal points given the long input in millisec
+    public static String getElapsedDecimalString(long elapsedMilli) {
+        //result variable
+        String result;
 
-    // elaspsed time in seconds
+        //convert long to decimal float second
+        float elapsedSec = elapsedMilli / SECOND_MILLI;
+
+        //limit to 3 decimals
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
+
+        //convert to String with 3 decimals
+        result = decimalFormat.format(elapsedSec);
+
+        return result;
+    }//getElapsedDecimalString
+
+
+    // elapsed time in seconds
     public long getElapsedSecs() {
         if (running) {
             return (((System.currentTimeMillis() -pauseDiff) - startTime) / 1000);
