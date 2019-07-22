@@ -34,11 +34,24 @@ public class CalculatorTest {
      * Test for converting elapsed long to 3 decimal String
      */
     @Test
-    public void floatToStringConversion() {
+    public void floatToStringConversionTest() {
 
-        String resultConvert = Counter.getElapsedDecimalString(2946);
+        String resultConvert = Counter.getTestElapsedDecimalString(2946);
         assertThat(resultConvert, is(equalTo("2.946")));
     }//bpmCalculator
+
+    @Test
+    public void getBpmTest() {
+        int bpm = getBpm(4, 4000);
+        assertThat(bpm, is(equalTo(60)));
+    }//getBpm
+
+    private int getBpm (int count, long elapsed) {
+
+        float bmpFloat = (count * 60000.0f) / elapsed;
+        int bpm = (int) bmpFloat;
+        return bpm;
+    }
 
 
 }//BpmCalculatorTest
