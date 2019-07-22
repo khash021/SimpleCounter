@@ -412,8 +412,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //setup buttons
                 setupButtonsPaused();
 
-
-
                 //Disable the bpm text cursor
                 textBpm.setCursorVisible(false);
                 break;
