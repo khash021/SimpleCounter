@@ -1,5 +1,6 @@
 package app.khash.simplecounter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,7 +14,7 @@ import android.widget.TextView;
  */
 
 public class BpmCalculatorActivity extends AppCompatActivity implements View.OnClickListener {
-    
+
     //TODO: SavedInstances
     //TODO: Handle special cases for bpm (no timer, no count)
 
@@ -24,12 +25,15 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
     //to keep track of the timer
     private int count;
     private long elapsedLong;
+    private int calculatedBpm = -1;
 
     //constants to keep track of app state to be used for rotation events
     private final static int STATE_RESET = 1;
     private final static int STATE_RUNNING = 2;
     private final static int STATE_STOPPED = 3;
     private int appState;
+
+    public static final String EXTRA_REPLY_BPM = "extra_reply_bpm";
 
     //constants for the handler
     private final int MSG_START_TIMER = 0;
@@ -159,7 +163,13 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
             //button done
             case R.id.button_done:
                 //TODO: send data back
-                break;
+                if (calculatedBpm == -1) {
+                    break;
+                }
+                Intent bpmIntent = new Intent();
+                bpmIntent.putExtra(EXTRA_REPLY_BPM, calculatedBpm);
+                setResult(RESULT_OK, bpmIntent);
+                finish();
 
         }//switch
 
@@ -181,6 +191,8 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         //cast into int, we do this instead of rounding to the nearest, because a bpm of 2.9 does
         //not make sense and it is still 2.
         int bpm = (int) bmpFloat;
+
+        calculatedBpm = bpm;
 
         return bpm;
     }//getBpm

@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:text="@string/bpm_suffix"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_marginLeft="10dp"
         app:layout_constraintBottom_toBottomOf="@id/text_bpm"
         app:layout_constraintStart_toEndOf="@id/text_bpm"/>
