@@ -25,4 +25,6 @@
          running.\nClick Stop to calculate the bpm. Click Done to go back to the Home Screen.
     </string>
     <string name="plus_sign">+</string>
+    <string name="zero">0</string>
+    <string name="zero_decimal">0.000</string>
 </resources>
