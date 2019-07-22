@@ -55,7 +55,6 @@
         android:layout_margin="10dp"
         android:layout_marginTop="20dp"
         android:fontFamily="sans-serif"
-        android:hint="@string/counter"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
