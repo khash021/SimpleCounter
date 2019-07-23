@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public final static String SAVED_START_TIME = "saved_start_time";
     public final static String SAVED_PAUSE_TIME = "saved_pause_time";
     public final static String SAVED_PAUSE_DIFF = "saved_pause_diff";
-    private final static String SAVED_COUNTER_BUNDLE = "saved_counter_bundle";
-    private final static String SAVED_ELAPSED = "saved_elapsed";
-    private final static String SAVED_COUNTER = "saved_counter";
+    public final static String SAVED_COUNTER_BUNDLE = "saved_counter_bundle";
+    public final static String SAVED_ELAPSED = "saved_elapsed";
+    public final static String SAVED_COUNTER = "saved_counter";
 
     public final static int STATE_RESET = 1;
     public final static int STATE_RUNNING = 2;
