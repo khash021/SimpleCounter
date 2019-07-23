@@ -20,7 +20,6 @@ public class Counter {
     private boolean pause = false;
     private int bpm;
     private final float MINUTE = 60.0f;
-    private final static float MINUTE_MILLI = 60000.0f;
     private final static float SECOND_MILLI = 1000.0f;
 
     //default constructor
