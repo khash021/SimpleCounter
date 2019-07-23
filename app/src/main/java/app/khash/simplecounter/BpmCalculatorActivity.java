@@ -9,13 +9,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+
 /**
  * Class for helping the user find the bpm
  */
 
 public class BpmCalculatorActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //TODO: SavedInstances
+    //TODO: SavedInstances, rotation does not keep count. On reset, it doesn't show anything in texts
     //TODO: Handle special cases for bpm (no timer, no count)
 
 
@@ -32,6 +34,9 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
     private final static int STATE_RUNNING = 2;
     private final static int STATE_STOPPED = 3;
     private int appState;
+    private final static String SAVED_COUNT = "saved_count";
+    private final static String SAVED_ELAPSED = "saved_elapsed";
+    private final static String SAVED_BPM = "saved_bpm";
 
     public static final String EXTRA_REPLY_BPM = "extra_reply_bpm";
 
@@ -117,12 +122,18 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         buttonDone.setOnClickListener(this);
         buttonCounterIncrease.setOnClickListener(this);
 
-        //TODO: figure out the savedInstances
+        //check to see if there is any saved bundle
+        if (savedInstanceState == null) {
+            //default behavior, no saved data
+            resetTexts();
+            appState = STATE_RESET;
+        } else {
+            setupSavedState(savedInstanceState);
 
-        resetTexts();
+
+        }//if-else: null savedInstance
 
     }//onCreate
-
 
 
     @Override
@@ -175,9 +186,51 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
 
     }//onClick
 
-    /**  helper method for returning the calculated bpm. The method has an argument count,
-     *   which is the counter integer from the user (count)
-         returns -1 if the counter is not running */
+    /**
+     * Here we Override this method, so if the app is destroyed (mainly device rotation), we
+     * can pass our data with the Bundle, so we can use it to setup the UI in onCreate
+     *
+     * @param outState : Bundle containing all data to be passed along
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        //use switch statement to decide what data to store
+        switch (appState) {
+            case STATE_RUNNING:
+                //make sure counter is not null
+                if (counter != null) {
+                    //pass along the counter info as a bundle
+                    outState.putBundle(MainActivity.SAVED_COUNTER_BUNDLE, counter.getSaveBundle());
+                    //add the app state so that we can setup the UI in onCreate again
+                    outState.putInt(MainActivity.SAVED_STATE, appState);
+                    //pass the count
+                    outState.putInt(SAVED_COUNT, count);
+                }//if-null counter
+                break;
+            case STATE_STOPPED:
+                //get the values of elapsed time, count, bpm, and appstate
+                outState.putString(SAVED_ELAPSED, textTimer.getText().toString());
+                outState.putInt(SAVED_COUNT, count);
+                outState.putInt(SAVED_BPM, calculatedBpm);
+                outState.putInt(MainActivity.SAVED_STATE, appState);
+                break;
+            default:
+                appState = STATE_RESET;
+                outState.putInt(MainActivity.SAVED_STATE, appState);
+                break;
+        }//switch
+
+    }//onSaveInstanceState
+
+    /* ------------------HELPER METHODS------------------------   */
+
+    /**
+     * helper method for returning the calculated bpm. The method has an argument count,
+     * which is the counter integer from the user (count)
+     * returns -1 if the counter is not running
+     */
     public int getBpm(int count) {
         //check to make sure count is not zero
         if (count < 1) {
@@ -196,13 +249,6 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
 
         return bpm;
     }//getBpm
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }//onSaveInstanceState
 
     //Helper method for setting up buttons for reset state
     private void setupButtonsReset() {
@@ -240,5 +286,81 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         textCounter.setText(R.string.zero);
         textBpm.setText("");
     }//resetTexts
+
+    //helper method for setting up the UI based on the saved Bundle
+    private void setupSavedState(Bundle savedInstanceState) {
+        //retrieve appstate from the bundle
+        int savedState = savedInstanceState.getInt(MainActivity.SAVED_STATE, -1);
+        //use Switch to figure out what to do
+        switch (savedState) {
+            case STATE_RESET:
+                resetTexts();
+                setupButtonsReset();
+                appState = STATE_RESET;
+                break;
+            case STATE_RUNNING:
+                //check the bundle and figure out if this is a re-create and setup UI accordingly
+                Bundle counterObjectBundle = savedInstanceState.getBundle(MainActivity.SAVED_COUNTER_BUNDLE);
+                //WTF case
+                if (counterObjectBundle == null) {
+                    break;
+                }
+                counter = new Counter(counterObjectBundle);
+
+                //setup buttons
+                setupButtonsRunning();
+
+                appState = STATE_RUNNING;
+
+                //get the count and set it
+                int savedCount = savedInstanceState.getInt(SAVED_COUNT, -1);
+                if (savedCount != -1) {
+                    count = savedCount;
+                    textCounter.setText(Integer.toString(count));
+                }
+
+                //start the handler
+                handler.sendEmptyMessage(MSG_UPDATE_TIMER);
+                break;
+            case STATE_STOPPED:
+                setupButtonsStopped();
+                appState = STATE_STOPPED;
+
+                String elapsed = savedInstanceState.getString(SAVED_ELAPSED);
+                if (elapsed != null) {
+                    textTimer.setText(elapsed);
+                }
+
+                int count = savedInstanceState.getInt(SAVED_COUNT, -1);
+                if (count != -1) {
+                    textCounter.setText(Integer.toString(count));
+                    this.count = count;
+                }
+
+                int bpm = savedInstanceState.getInt(SAVED_BPM, -1);
+                if (bpm != -1) {
+                    textBpm.setText(Integer.toString(bpm));
+                    this.calculatedBpm = bpm;
+                }
+                break;
+            case -1:
+            default:
+                //this case should never happen
+                resetTexts();
+                setupButtonsReset();
+                appState = STATE_RESET;
+                break;
+        }//switch
+    }//setupSavedState
+
+    //helper method for converting long to 3 decimal String
+    private String convertLondToStringDecimal(long input) {
+        float elapsed = input / 1000.0f;
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.000");
+        //convert to String with 3 decimals
+        String output = decimalFormat.format(elapsed);
+        return output;
+    }//convertLondToStringDecimal
 
 }//BpmCalculatorActivity
