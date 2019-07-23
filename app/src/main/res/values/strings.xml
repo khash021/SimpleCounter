@@ -28,4 +28,5 @@
     <string name="zero">0</string>
     <string name="zero_decimal">0.000</string>
     <string name="bpm_suffix">  BPM</string>
+    <string name="app_title">Simple Counter</string>
 </resources>
