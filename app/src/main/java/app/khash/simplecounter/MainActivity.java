@@ -18,7 +18,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //TODO: fix the blinking edit text (either get rid of it, or program it)
+
+    //TODO: clean up, comment
 
     //constants for the handler
     private final int MSG_START_TIMER = 0;
@@ -236,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }//onCreate
 
-
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -298,6 +298,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //get the values of elapsed time and counter and pass it to the bundle
             outState.putString(SAVED_ELAPSED, elapsedString);
             outState.putString(SAVED_COUNTER, counterString);
+            //pass in the app state
+            outState.putInt(SAVED_STATE, appState);
 
         } else if(appState == STATE_RESET) {
             //just pass in the app state so it could be setup accordingly on recreate
