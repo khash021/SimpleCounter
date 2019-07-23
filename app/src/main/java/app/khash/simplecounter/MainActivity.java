@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Main class for SimpleCounter app
@@ -169,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //setup the UI
                 int state = savedInstanceState.getInt(SAVED_STATE, 0);
                 //zero value means there was nothing in the bundle. Otherwise set it up
-                if (state !=0) {
+                if (state != 0) {
                     //set the app state
                     appState = state;
                     //use the helper method to setup the UI
@@ -183,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //setup the UI
                 int state = savedInstanceState.getInt(SAVED_STATE, 0);
                 //zero value means there was nothing in the bundle. Otherwise set it up
-                if (state !=0) {
+                if (state != 0) {
                     //set the app state
                     appState = state;
                     //use the helper method to setup the UI
@@ -301,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //pass in the app state
             outState.putInt(SAVED_STATE, appState);
 
-        } else if(appState == STATE_RESET) {
+        } else if (appState == STATE_RESET) {
             //just pass in the app state so it could be setup accordingly on recreate
             outState.putInt(SAVED_STATE, appState);
         } else {
@@ -339,6 +343,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+    }//onActivityResult
+
+    //Initialize the contents of the Activity's standard options menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.options_menu, menu);
+
+        //You must return true for the menu to be displayed; if you return false it will not be shown.
+        return true;
+    }//onCreateOptionsMenu
+
+
+    /**
+     * This gets called every time a menu item is clicked
+     * When you successfully handle a menu item, return true.
+     * If you don't handle the menu item you should call the superclass implementation
+     *
+     * @param item menu item that was clicked on
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //get the id of the menu item
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_settings:
+                showToast("Settings");
+                return true;
+            case R.id.action_contact:
+                showToast("Contact");
+                return true;
+            case R.id.action_privacy:
+                showToast("Privacy Policy");
+                return true;
+            case R.id.action_share:
+                showToast("Share");
+                return true;
+            case R.id.action_about:
+                showToast("About");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }//switch
+    }//onOptionsItemSelected
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /* ------------------HELPER METHODS------------------------   */
