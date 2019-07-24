@@ -15,16 +15,12 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
- * Main class for SimpleCounter app
+ * Main class for SimpleCounter app.
  */
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
-
-    //TODO: clean up, comment
 
     //constants for the handler
     private final int MSG_START_TIMER = 0;
@@ -46,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public final static String SAVED_ELAPSED = "saved_elapsed";
     public final static String SAVED_COUNTER = "saved_counter";
 
+    //constants for app state
     public final static int STATE_RESET = 1;
     public final static int STATE_RUNNING = 2;
     public final static int STATE_PAUSED = 3;
@@ -69,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView textStopWatch, textCounter;
     EditText textBpm;
     Button buttonStart, buttonStop, buttonPause, buttonReset, buttorBpmCalc;
-
     RadioGroup radioBpmGroup;
 
     //variables to store elapsed time and counter
@@ -115,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         counter.stop();//stop time
                     }
                     break;
-
                 default:
                     break;
             }
@@ -151,73 +146,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttorBpmCalc.setOnClickListener(this);
 
 
+        /**
+         *      Here we check the savedInstanceState Bundle. If it is null, this means this is the
+         *      first time and we setup the default UI.
+         *      Otherwise, we need to extract the data from bundle (mainly app state) and set up
+         *      UI and app accordingly
+         *
+         */
         //check the savedInstanceState bundle to see whether it was an orientation change or not
-        if (savedInstanceState != null) {
-            /* check to see whether there is a bundle with it which means we need to create a counter
-               object, otherwise we will just show the counter and stopwatch values */
-            Bundle counterObjectBundle = savedInstanceState.getBundle(SAVED_COUNTER_BUNDLE);
-            if (counterObjectBundle == null) {
-                //this means we just need to show the saved values
-                String elapsed = savedInstanceState.getString(SAVED_ELAPSED);
-                String counter = savedInstanceState.getString(SAVED_COUNTER);
-
-                //just a dummy, WTF check
-                if (elapsed != null) {
-                    elapsedString = elapsed;
-                    textStopWatch.setText(elapsedString);
-                }
-                if (counter != null) {
-                    counterString = counter;
-                    textCounter.setText(counterString);
-                }
-
-                //setup the UI
-                int state = savedInstanceState.getInt(SAVED_STATE, 0);
-                //zero value means there was nothing in the bundle. Otherwise set it up
-                if (state != 0) {
-                    //set the app state
-                    appState = state;
-                    //use the helper method to setup the UI
-                    setupButtons(appState);
-                }//if
-
-            } else {
-                //this means we need to create a new counter object and set it up
-                counter = new Counter(counterObjectBundle);
-
-                //setup the UI
-                int state = savedInstanceState.getInt(SAVED_STATE, 0);
-                //zero value means there was nothing in the bundle. Otherwise set it up
-                if (state != 0) {
-                    //set the app state
-                    appState = state;
-                    //use the helper method to setup the UI
-                    setupButtons(appState);
-                }//if
-
-                //if this is a pause, we also wanna just show the results
-                String elapsed = savedInstanceState.getString(SAVED_ELAPSED);
-                String counter = savedInstanceState.getString(SAVED_COUNTER);
-
-                //just a dummy, WTF check
-                if (elapsed != null) {
-                    elapsedString = elapsed;
-                    textStopWatch.setText(elapsedString);
-                }
-                if (counter != null) {
-                    counterString = counter;
-                    textCounter.setText(counterString);
-                }
-
-                //start the handler
-                handler.sendEmptyMessage(MSG_UPDATE_TIMER);
-            }
-
+        if (savedInstanceState == null) {
+            //setup default
+            setupButtonsReset();
+            appState = STATE_RESET;
         } else {
-            //Bundle is null and this is a new instance, so setup the default
-            //set the initial state of buttons
-            setupResetState();
-        }
+            setupSavedState(savedInstanceState);
+        }//else-if
 
         //radio buttons click listeners
         radioBpmGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -239,11 +182,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }//switch
             }
         });
-
     }//onCreate
 
+    /**
+     * This gets called whenever a view (TextView, Button, etc) is clicked
+     *
+     * @param v : view that triggered this method
+     */
     public void onClick(View v) {
-
         switch (v.getId()) {
             //START Button
             case R.id.button_start:
@@ -298,6 +244,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        //TODO: fix this, use switch
+
         //check whether it is stopped, if yes, just pass the values
         if (appState == STATE_STOPPED) {
             //get the values of elapsed time and counter and pass it to the bundle
@@ -325,11 +273,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }//onSaveInstanceState
 
-    //Extract the calculated bpm
+
+    /**
+     * This gets called when the startActivityForResults() (which we used to start BPM
+     * calculator activity) finishes with a result. We get that here and update the
+     * UI accordingly
+     *
+     * @param requestCode : this is the unique code we used for starting the bpm calculator activity
+     * @param resultCode  : this is the result code. We check to make sure it is OK, otherwise do nothing
+     * @param data        : the actual data that was passed to this activity. The 'actual' result
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         //make sure it is the right result
         if (requestCode == BPM_REQUEST) {
             //make sure it is OK result
@@ -351,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        //get the inflator
+        //get the inflater
         MenuInflater inflater = getMenuInflater();
 
         //inflate the menu
@@ -389,21 +345,108 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return super.onOptionsItemSelected(item);
             case R.id.action_privacy:
-                showToast("Privacy Policy");
+                //TODO: privacy policy
                 return true;
             case R.id.action_about:
-                showToast("About");
+                //TODO: about text
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }//switch
     }//onOptionsItemSelected
 
-    private void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
     /* ------------------HELPER METHODS------------------------   */
+    //TODO: cleanup helper methods
+
+    /**
+     *      Helper method for setting up the app and UI based on the saved Bundle
+     * @param savedBundle : savedInstanceBundle that was passed to the activity
+     */
+    private void setupSavedState(Bundle savedBundle) {
+        //extract app state from the bundle and pass it to helper method to setup
+        int appStateSaved = savedBundle.getInt(SAVED_STATE, -1);
+        //get the bundle that contains all the saved data
+        Bundle counterObjectBundle = savedBundle.getBundle(SAVED_COUNTER_BUNDLE);
+        //get the values
+        String elapsedSaved = savedBundle.getString(SAVED_ELAPSED);
+        String counterSaved = savedBundle.getString(SAVED_COUNTER);
+
+        switch (appStateSaved) {
+
+            case STATE_RESET:
+                //setup reset state
+                appState = appStateSaved;
+                setupButtons(appState);
+                break;
+
+            case STATE_RUNNING:
+                //make sure it is not null
+                if (counterObjectBundle == null) {
+                    break;
+                }//null bundle
+                appState = appStateSaved;
+
+                //instantiate the counter object with the bundle
+                counter = new Counter(counterObjectBundle);
+
+                //setup buttons
+                setupButtons(appState);
+
+                //start the handler
+                handler.sendEmptyMessage(MSG_UPDATE_TIMER);
+                break;
+
+            case STATE_PAUSED:
+                //make sure it is not null
+                if (counterObjectBundle == null) {
+                    break;
+                }
+                appState = appStateSaved;
+
+                //instantiate the counter object with the bundle
+                counter = new Counter(counterObjectBundle);
+
+                //setup buttons
+                setupButtons(appState);
+
+                //just a dummy, WTF check
+                if (elapsedSaved != null) {
+                    elapsedString = elapsedSaved;
+                    textStopWatch.setText(elapsedString);
+                }
+                if (counterSaved != null) {
+                    counterString = counterSaved;
+                    textCounter.setText(counterString);
+                }
+
+                //start the handler
+                handler.sendEmptyMessage(MSG_UPDATE_TIMER);
+                break;
+
+            case STATE_STOPPED:
+                appState = appStateSaved;
+
+                //setup buttons
+                setupButtons(appState);
+
+                //just a dummy, WTF check
+                if (elapsedSaved != null) {
+                    elapsedString = elapsedSaved;
+                    textStopWatch.setText(elapsedString);
+                }
+                if (counterSaved != null) {
+                    counterString = counterSaved;
+                    textCounter.setText(counterString);
+                }
+                break;
+            case -1:
+            default:
+                //setup reset state
+                appState = appStateSaved;
+                setupButtons(appState);
+                break;
+        }//switch
+    }//setupSavedState
 
     //helper method for setting up the UI for reset state
     private void setupResetState() {
@@ -412,7 +455,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //reset the texts
         resetTexts();
-
 
         //make cursor visible again
         textBpm.setCursorVisible(true);
