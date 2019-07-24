@@ -355,9 +355,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                 }
                 return super.onOptionsItemSelected(item);
-            case R.id.action_privacy:
-                //TODO: privacy policy
-                return true;
             case R.id.action_about:
                 //TODO: about text
                 return true;
@@ -366,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }//switch
     }//onOptionsItemSelected
 
-    
+
     /* ------------------HELPER METHODS------------------------   */
 
     /**
