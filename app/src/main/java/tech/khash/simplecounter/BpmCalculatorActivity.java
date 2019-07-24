@@ -9,18 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-
 /**
  * Class for helping the user find the bpm
  */
 
 public class BpmCalculatorActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //TODO: SavedInstances, rotation does not keep count. On reset, it doesn't show anything in texts
-    //TODO: Handle special cases for bpm (no timer, no count)
-
-
+    //Views
     private Button buttonStart, buttonStop, buttonReset, buttonDone, buttonCounterIncrease;
     private TextView textTimer, textCounter, textBpm, textBpmSuffix;
 
@@ -33,11 +28,14 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
     private final static int STATE_RESET = 1;
     private final static int STATE_RUNNING = 2;
     private final static int STATE_STOPPED = 3;
-    private int appState;
     private final static String SAVED_COUNT = "saved_count";
     private final static String SAVED_ELAPSED = "saved_elapsed";
     private final static String SAVED_BPM = "saved_bpm";
 
+    //keeping track of app state for setting and resetting UI
+    private int appState;
+
+    //used for sending data to MainActivity
     public static final String EXTRA_REPLY_BPM = "extra_reply_bpm";
 
     //constants for the handler
@@ -51,8 +49,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
     //Counter object
     Counter counter;
 
-    //the Handler that does the work of refreshing and getting new values from  and updating
-    //the UI
+    //the Handler that does the work of refreshing and getting new timer values and updating UI
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -107,6 +104,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         textBpm = findViewById(R.id.text_bpm);
         textBpmSuffix = findViewById(R.id.text_bpm_suffix);
 
+        //we will only show this once we calculated a bpm
         textBpmSuffix.setVisibility(View.INVISIBLE);
 
         buttonStart = findViewById(R.id.button_start);
@@ -124,41 +122,58 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
 
         //check to see if there is any saved bundle
         if (savedInstanceState == null) {
-            //default behavior, no saved data
+            //default behavior, no saved data. default UI
             setupButtonsReset();
             resetTexts();
             appState = STATE_RESET;
         } else {
+            //it is a re-create and we need to set it up accordingly
             setupSavedState(savedInstanceState);
-
-
         }//if-else: null savedInstance
-
     }//onCreate
 
 
+    /**
+     * This gets called whenever a view (TextView, Button, etc) is clicked
+     *
+     * @param v : view that triggered this method
+     */
     @Override
     public void onClick(View v) {
+        //get the id of the view
         switch (v.getId()) {
-            //increase the count by one
+            //increase the count by one and update UI
             case R.id.button_counter_increase:
                 count++;
                 textCounter.setText(Integer.toString(count));
                 break;
             //start button
             case R.id.button_start:
+                //setup UI
                 setupButtonsRunning();
                 resetTexts();
+
+                //instantiate the counter and start
                 counter = new Counter();
                 counter.start();
+
+                //start the handler to update UI
                 handler.sendEmptyMessage(MSG_START_TIMER);
+
+                //update the app state
                 appState = STATE_RUNNING;
                 break;
             //stop button
             case R.id.button_stop:
+                //stop the handler
                 handler.sendEmptyMessage(MSG_STOP_TIMER);
+
+                //setup UI
                 setupButtonsStopped();
+
+                //calculate bpm
                 int bpm = getBpm(count);
+
                 //returns -1 if there was a problem
                 if (bpm != -1) {
                     textBpm.setText(Integer.toString(bpm));
@@ -167,6 +182,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
                 break;
             //reset button
             case R.id.button_reset:
+                //reset the UI
                 setupButtonsReset();
                 resetTexts();
                 count = 0;
@@ -174,7 +190,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
                 break;
             //button done
             case R.id.button_done:
-                //TODO: send data back
+                //send data (calculated bpm) back to mainactivity
                 if (calculatedBpm == -1) {
                     break;
                 }
@@ -182,9 +198,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
                 bpmIntent.putExtra(EXTRA_REPLY_BPM, calculatedBpm);
                 setResult(RESULT_OK, bpmIntent);
                 finish();
-
         }//switch
-
     }//onClick
 
     /**
@@ -222,7 +236,6 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
                 outState.putInt(MainActivity.SAVED_STATE, appState);
                 break;
         }//switch
-
     }//onSaveInstanceState
 
     /* ------------------HELPER METHODS------------------------   */
@@ -290,7 +303,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
 
     //helper method for setting up the UI based on the saved Bundle
     private void setupSavedState(Bundle savedInstanceState) {
-        //retrieve appstate from the bundle
+        //retrieve app state from the bundle
         int savedState = savedInstanceState.getInt(MainActivity.SAVED_STATE, -1);
         //use Switch to figure out what to do
         switch (savedState) {
@@ -353,15 +366,4 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
                 break;
         }//switch
     }//setupSavedState
-
-    //helper method for converting long to 3 decimal String
-    private String convertLondToStringDecimal(long input) {
-        float elapsed = input / 1000.0f;
-
-        DecimalFormat decimalFormat = new DecimalFormat("0.000");
-        //convert to String with 3 decimals
-        String output = decimalFormat.format(elapsed);
-        return output;
-    }//convertLondToStringDecimal
-
 }//BpmCalculatorActivity
