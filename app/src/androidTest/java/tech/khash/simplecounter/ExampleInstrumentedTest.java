@@ -1,4 +1,4 @@
-package app.khash.simplecounter;
+package tech.khash.simplecounter;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

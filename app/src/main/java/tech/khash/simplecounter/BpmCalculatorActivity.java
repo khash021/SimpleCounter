@@ -1,4 +1,4 @@
-package app.khash.simplecounter;
+package tech.khash.simplecounter;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -125,6 +125,7 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
         //check to see if there is any saved bundle
         if (savedInstanceState == null) {
             //default behavior, no saved data
+            setupButtonsReset();
             resetTexts();
             appState = STATE_RESET;
         } else {

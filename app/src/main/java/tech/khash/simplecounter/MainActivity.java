@@ -1,4 +1,4 @@
-package app.khash.simplecounter;
+package tech.khash.simplecounter;
 
 import android.content.Intent;
 import android.net.Uri;
