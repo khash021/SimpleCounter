@@ -1,6 +1,7 @@
 package app.khash.simplecounter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -377,8 +378,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showToast("Settings");
                 return true;
             case R.id.action_contact:
-                showToast("Contact");
-                return true;
+                //send email. Use Implicit intent so the user can choose their preferred app
+                //create uri for email
+                String email = "simplecounter@khash.tech";
+                Uri emailUri = Uri.parse("mailto:" + email);
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, emailUri);
+                //make sure the device can handle the intent before sending
+                if (emailIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(emailIntent);
+                    return true;
+                }
+                return super.onOptionsItemSelected(item);
             case R.id.action_privacy:
                 showToast("Privacy Policy");
                 return true;
