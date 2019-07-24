@@ -23,7 +23,8 @@ public class Counter {
     private final static float SECOND_MILLI = 1000.0f;
 
     //default constructor
-    public Counter() {}
+    public Counter() {
+    }
 
     //for creating a new counter object
     public Counter(int bpm) {
@@ -78,7 +79,7 @@ public class Counter {
     // elapsed time in milliseconds
     public long getElapsedMilli() {
         if (running) {
-            return (System.currentTimeMillis() -pauseDiff) - startTime;
+            return (System.currentTimeMillis() - pauseDiff) - startTime;
         }
         return stopTime - startTime;
     }//getElapsedMilli
@@ -91,8 +92,8 @@ public class Counter {
         if (running) {
             long elapsedMilli = getElapsedMilli();
             float bpmFloat = elapsedMilli * (bpm / MINUTE);
-            int counter = (int) bpmFloat/1000;
-            String output = counter + ";" + (elapsedMilli /1000);
+            int counter = (int) bpmFloat / 1000;
+            String output = counter + ";" + (elapsedMilli / 1000);
             return output;
         } else {
             return null;
@@ -118,35 +119,15 @@ public class Counter {
 
     //return elapsed seconds in 3 decimal format in String
     public String getElapsedDecimalString() {
-        if (!running) {return null; }
+        if (!running) {
+            return null;
+        }
 
         //get the elapsed time
         long elapsedLong = getElapsedMilli();
 
         return getTestElapsedDecimalString(elapsedLong);
     }//getElapsedDecimalString
-
-
-    // elapsed time in seconds
-    public long getElapsedSecs() {
-        if (running) {
-            return (((System.currentTimeMillis() -pauseDiff) - startTime) / 1000);
-        }
-        return ((stopTime - startTime) / 1000);
-    }//getElapsedSecs
-
-    //get counter value based on bpm
-    public int getBpm() {
-        if (running) {
-            long elapsedMilli = getElapsedMilli();
-            float bpmFloat = elapsedMilli * (bpm / MINUTE);
-            int counter = Math.round(bpmFloat / 1000);
-            return counter;
-
-        } else {
-            return -1;
-        }
-    }//getBpm
 
     /* get all the information regarding the current Counter object, so it could be passed along the
        savedInstance Bundle to be used to recreate another identical object it is passed using the
@@ -155,7 +136,7 @@ public class Counter {
     public Bundle getSaveBundle() {
         //create and initialize a new Bundle object
         Bundle output = new Bundle();
-        if(running) {
+        if (running) {
             String state;
             if (pause) {
                 state = MainActivity.SAVED_STATE_PAUSED;
@@ -176,7 +157,5 @@ public class Counter {
             //this is the case that it is not running
             return null;
         }
-
     }//getSavingData
-
 }//Counter Class
