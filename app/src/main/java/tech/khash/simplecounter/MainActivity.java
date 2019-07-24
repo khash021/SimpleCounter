@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     int bpm;
     final int BPM_DEFAULT = 60;
-    final int BMP_40 = 40;
-    final int BMP_120 = 120;
+    final int BPM_40 = 40;
+    final int BPM_120 = 120;
 
     //Counter class variable
     Counter counter;
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.radio_bpm_40:
-                        bpm = BMP_40;
+                        bpm = BPM_40;
                         textBpm.setText(Integer.toString(bpm));
                         break;
                     case R.id.radio_bpm_60:
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         textBpm.setText(Integer.toString(bpm));
                         break;
                     case R.id.radio_bpm_120:
-                        bpm = BMP_120;
+                        bpm = BPM_120;
                         textBpm.setText(Integer.toString(bpm));
                         break;
                 }//switch
@@ -196,6 +196,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //setup the variable bpm based on the UI
                 if (textBpm.getText().toString().trim().length() > 0) {
                     bpm = Integer.parseInt(textBpm.getText().toString().trim());
+                    //use helper method to take care of selection, or clearing group based on bpm
+                    setupRadioGroup(bpm);
+
                 } else {
                     //by checking the 60 of the radio group, that automatically updates bpm variable
                     ((RadioButton) findViewById(R.id.radio_bpm_60)).setChecked(true);
@@ -241,11 +244,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }//onClick
 
     /**
-     *          This gets called when the activity is about to be destroyed and we can save
-     *          our app state or any other useful data to send to the new instance. This is the
-     *          bundle that gets passed into onCreate.
-     *          Here we save our appstate together with counter, timer, etc to be used for recreating
-     *          the app after orientation changes mainly
+     * This gets called when the activity is about to be destroyed and we can save
+     * our app state or any other useful data to send to the new instance. This is the
+     * bundle that gets passed into onCreate.
+     * Here we save our appstate together with counter, timer, etc to be used for recreating
+     * the app after orientation changes mainly
+     *
      * @param outState : bundle that is passed
      */
     @Override
@@ -373,7 +377,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /* ------------------HELPER METHODS------------------------   */
 
     /**
-     *      Helper method for setting up the app and UI based on the saved Bundle
+     * Helper method for setting up the app and UI based on the saved Bundle
+     *
      * @param savedBundle : savedInstanceBundle that was passed to the activity
      */
     private void setupSavedState(Bundle savedBundle) {
@@ -461,6 +466,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }//switch
     }//setupSavedState
+
+    /**
+     * Helper method for when the start button is clicked. This will examine the bpm, and
+     * then either clear the radio group (if the bpm is different from presets), or select the
+     * appropriate one
+     *
+     * @param bpm : bpm before the start
+     */
+    private void setupRadioGroup(int bpm) {
+        switch (bpm) {
+            case BPM_40:
+                radioBpmGroup.check(R.id.radio_bpm_40);
+                break;
+            case BPM_DEFAULT:
+                radioBpmGroup.check(R.id.radio_bpm_60);
+                break;
+            case BPM_120:
+                radioBpmGroup.check(R.id.radio_bpm_120);
+                break;
+            default:
+                radioBpmGroup.clearCheck();
+                break;
+        }//switch
+    }//setupRadioGroup
 
     //helper method for setting up the UI for reset state
     private void setupResetState() {
