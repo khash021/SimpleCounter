@@ -351,8 +351,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
+        //get the inflator
         MenuInflater inflater = getMenuInflater();
 
+        //inflate the menu
         inflater.inflate(R.menu.options_menu, menu);
 
         //You must return true for the menu to be displayed; if you return false it will not be shown.
@@ -374,9 +376,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_settings:
-                showToast("Settings");
-                return true;
             case R.id.action_contact:
                 //send email. Use Implicit intent so the user can choose their preferred app
                 //create uri for email
@@ -391,9 +390,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return super.onOptionsItemSelected(item);
             case R.id.action_privacy:
                 showToast("Privacy Policy");
-                return true;
-            case R.id.action_share:
-                showToast("Share");
                 return true;
             case R.id.action_about:
                 showToast("About");
