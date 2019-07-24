@@ -240,6 +240,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }//switch
     }//onClick
 
+    /**
+     *          This gets called when the activity is about to be destroyed and we can save
+     *          our app state or any other useful data to send to the new instance. This is the
+     *          bundle that gets passed into onCreate.
+     *          Here we save our appstate together with counter, timer, etc to be used for recreating
+     *          the app after orientation changes mainly
+     * @param outState : bundle that is passed
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -358,8 +366,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }//switch
     }//onOptionsItemSelected
 
+    
     /* ------------------HELPER METHODS------------------------   */
-    //TODO: cleanup helper methods
 
     /**
      *      Helper method for setting up the app and UI based on the saved Bundle
