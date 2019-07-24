@@ -19,8 +19,12 @@
         </activity>
 
         <activity android:name="tech.khash.simplecounter.BpmCalculatorActivity"
-            android:label="BPM Calculator"
+            android:label="@string/bpm_calc_menu"
             android:parentActivityName="tech.khash.simplecounter.MainActivity"/>
+
+        <activity android:name=".AboutActivity"
+            android:label="@string/about"
+            android:parentActivityName=".AboutActivity"/>
     </application>
 
 </manifest>

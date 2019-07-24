@@ -366,7 +366,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return super.onOptionsItemSelected(item);
             case R.id.action_about:
-                //TODO: about text
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
