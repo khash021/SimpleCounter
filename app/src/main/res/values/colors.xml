@@ -10,4 +10,7 @@
     <color name="colorAccent">#ffcc80</color>
     <color name="colorSecondary">#ff6e40</color>
     <color name="colorTertiary">#FFAB40</color>
+
+    <!--Used for links-->
+    <color name="colorLink">#0000FF</color>
 </resources>
