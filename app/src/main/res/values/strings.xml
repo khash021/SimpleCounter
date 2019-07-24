@@ -37,6 +37,16 @@
          running.\nClick Stop to calculate the bpm. Click Done to go back to the Home Screen.
     </string>
 
+    <string name="about_text">
+        Simple Counter app is designed, developed, and released by Khashayar “Khash” Mortazavi
+        (www.khash.tech)  and is a completely free, ad-free app that does not require any
+        permission, nor does it collect any user data of any kind.
+        \n\nThis is the initial release of this app, and we would greatly appreciated your comments
+        and suggestions. You can either contact using the ‘contact’ in application’s menu,
+        through Google Play, or simply by sending an email to SimpleCounter@khash.tech
+        \n\n\nThank you for your support, and happy counting!
+    </string>
+
 
 
 
