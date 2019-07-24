@@ -244,33 +244,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        //TODO: fix this, use switch
-
-        //check whether it is stopped, if yes, just pass the values
-        if (appState == STATE_STOPPED) {
-            //get the values of elapsed time and counter and pass it to the bundle
-            outState.putString(SAVED_ELAPSED, elapsedString);
-            outState.putString(SAVED_COUNTER, counterString);
-            //pass in the app state
-            outState.putInt(SAVED_STATE, appState);
-
-        } else if (appState == STATE_RESET) {
-            //just pass in the app state so it could be setup accordingly on recreate
-            outState.putInt(SAVED_STATE, appState);
-        } else {
-            //this means we have to get all the info and pass it along
-            if (counter != null) {
-                //pass along the counter info as a bundle
-                outState.putBundle(SAVED_COUNTER_BUNDLE, counter.getSaveBundle());
-                //add the app state so that we can setup the UI in onCreate again
+        switch (appState) {
+            case STATE_RESET:
+                //just pass in the app state so it could be setup accordingly on recreate
                 outState.putInt(SAVED_STATE, appState);
-                //if this is the paused state, we wanna just pass along the numbers
-                if (appState == STATE_PAUSED) {
-                    outState.putString(SAVED_ELAPSED, elapsedString);
-                    outState.putString(SAVED_COUNTER, counterString);
-                }//if-paused
-            }//if counter not null
-        }
+                break;
+
+            case STATE_RUNNING:
+            case STATE_PAUSED:
+                //this means we have to get all the info and pass it along
+                if (counter != null) {
+                    //pass along the counter info as a bundle
+                    outState.putBundle(SAVED_COUNTER_BUNDLE, counter.getSaveBundle());
+                    //add the app state so that we can setup the UI in onCreate again
+                    outState.putInt(SAVED_STATE, appState);
+                    //if this is the paused state, we wanna just pass along the numbers
+                    if (appState == STATE_PAUSED) {
+                        outState.putString(SAVED_ELAPSED, elapsedString);
+                        outState.putString(SAVED_COUNTER, counterString);
+                    }//if-paused
+                }//if counter not null
+                break;
+
+            case STATE_STOPPED:
+                //get the values of elapsed time and counter and pass it to the bundle
+                outState.putString(SAVED_ELAPSED, elapsedString);
+                outState.putString(SAVED_COUNTER, counterString);
+                //pass in the app state
+                outState.putInt(SAVED_STATE, appState);
+                break;
+        }//switch
     }//onSaveInstanceState
 
 
