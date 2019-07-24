@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/action_calculator"
+        android:orderInCategory="20"
+        android:title="@string/bpm_calc_menu"
+        android:icon="@drawable/ic_calc"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_contact"

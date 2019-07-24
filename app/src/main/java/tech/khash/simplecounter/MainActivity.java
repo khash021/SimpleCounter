@@ -343,6 +343,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.action_calculator:
+                //start bpm calculator activity for results
+                Intent bpmCalcIntent = new Intent(this, BpmCalculatorActivity.class);
+                startActivityForResult(bpmCalcIntent, BPM_REQUEST);
+                return true;
+
             case R.id.action_contact:
                 //send email. Use Implicit intent so the user can choose their preferred app
                 //create uri for email

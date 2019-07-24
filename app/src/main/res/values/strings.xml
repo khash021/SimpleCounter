@@ -9,6 +9,7 @@
     <string name="select_bpm_text">Please select BPM, enter manually, or use BPM Calculator</string>
 
     <string name="bpm_calc">BPM \n Calculator</string>
+    <string name="bpm_calc_menu">BPM Calculator</string>
 
     <string name="timer">Timer</string>
     <string name="counter">Counter</string>
