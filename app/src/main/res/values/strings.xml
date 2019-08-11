@@ -47,7 +47,10 @@
         \n\n\nThank you for your support, and happy counting!
     </string>
 
-
+    <string name="share_dialog_title">Check this app out!</string>
+    <string name="google_play_address" translatable="false">https://play.google.com/store/apps/details?id=tech.khash.simplecounter</string>
+    <string name="share_intent_title">Share Simple Counter</string>
+    <string name="contact_email" translatable="false">simplecounter@khash.tech</string>
 
 
 </resources>

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -353,10 +354,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(bpmCalcIntent, BPM_REQUEST);
                 return true;
 
+            case R.id.action_share:
+                ShareCompat.IntentBuilder.from(this)
+                        .setType("text/plain")
+                        .setChooserTitle(R.string.share_intent_title)
+                        .setSubject(getResources().getString(R.string.share_dialog_title))
+                        .setText(getResources().getString(R.string.google_play_address))
+                        .startChooser();
+                return true;
+
             case R.id.action_contact:
                 //send email. Use Implicit intent so the user can choose their preferred app
                 //create uri for email
-                String email = "simplecounter@khash.tech";
+                String email = getString(R.string.contact_email);
                 Uri emailUri = Uri.parse("mailto:" + email);
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, emailUri);
                 //make sure the device can handle the intent before sending
