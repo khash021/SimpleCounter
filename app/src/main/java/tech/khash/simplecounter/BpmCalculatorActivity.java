@@ -172,6 +172,8 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
                 setupButtonsStopped();
 
                 //calculate bpm
+                //we will add one count to the counter, because it starts from zero and end of the final beat
+                count++;
                 int bpm = getBpm(count);
 
                 //returns -1 if there was a problem
@@ -253,8 +255,6 @@ public class BpmCalculatorActivity extends AppCompatActivity implements View.OnC
 
         float MINUTE_MILLI = 60000.0f;
         //calculate bpm long
-        //we will add one count to the counter, because it starts from zero and end of the final beat
-        count++;
         float bmpFloat = (count * MINUTE_MILLI) / elapsedLong;
 
         //cast into int, we do this instead of rounding to the nearest, because a bpm of 2.9 does
